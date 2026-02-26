@@ -10,6 +10,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
@@ -72,12 +73,10 @@ public class Order {
         }
 
         public static OrderStatus fromValue(String value) {
-            for (OrderStatus status : values()) {
-                if (status.getValue().equals(value)) {
-                    return status;
-                }
-            }
-            throw new IllegalArgumentException("Invalid status: " + value);
+            return Arrays.stream(values())
+                .filter(status -> status.getValue().equals(value))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("Invalid status: " + value));
         }
     }
 }
