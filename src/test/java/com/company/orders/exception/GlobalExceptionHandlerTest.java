@@ -47,8 +47,8 @@ class GlobalExceptionHandlerTest {
         // Then
         assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
         assertNotNull(responseEntity.getBody());
-        assertEquals(ErrorResponse.ErrorCode.VALIDATION_ERROR, responseEntity.getBody().getCode());
-        assertTrue(responseEntity.getBody().getDetails().contains("fieldName: defaultMessage"));
+        assertEquals(ErrorResponse.ErrorCode.VALIDATION_ERROR, responseEntity.getBody().code());
+        assertTrue(responseEntity.getBody().details().contains("fieldName: defaultMessage"));
     }
 
     @Test
@@ -63,8 +63,8 @@ class GlobalExceptionHandlerTest {
         // Then
         assertEquals(HttpStatus.NOT_FOUND, responseEntity.getStatusCode());
         assertNotNull(responseEntity.getBody());
-        assertEquals(ErrorResponse.ErrorCode.NOT_FOUND, responseEntity.getBody().getCode());
-        assertEquals("Resource not found", responseEntity.getBody().getMessage());
+        assertEquals(ErrorResponse.ErrorCode.NOT_FOUND, responseEntity.getBody().code());
+        assertEquals("Resource not found", responseEntity.getBody().message());
     }
 
     @Test
@@ -79,8 +79,8 @@ class GlobalExceptionHandlerTest {
         // Then
         assertEquals(HttpStatus.FORBIDDEN, responseEntity.getStatusCode());
         assertNotNull(responseEntity.getBody());
-        assertEquals(ErrorResponse.ErrorCode.AUTHORIZATION_ERROR, responseEntity.getBody().getCode());
-        assertEquals("Access denied", responseEntity.getBody().getMessage());
+        assertEquals(ErrorResponse.ErrorCode.AUTHORIZATION_ERROR, responseEntity.getBody().code());
+        assertEquals("Access denied", responseEntity.getBody().message());
     }
 
     @Test
@@ -95,8 +95,8 @@ class GlobalExceptionHandlerTest {
         // Then
         assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
         assertNotNull(responseEntity.getBody());
-        assertEquals(ErrorResponse.ErrorCode.VALIDATION_ERROR, responseEntity.getBody().getCode());
-        assertEquals("Invalid order", responseEntity.getBody().getMessage());
+        assertEquals(ErrorResponse.ErrorCode.VALIDATION_ERROR, responseEntity.getBody().code());
+        assertEquals("Invalid order", responseEntity.getBody().message());
     }
 
     @Test
@@ -111,8 +111,8 @@ class GlobalExceptionHandlerTest {
         // Then
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, responseEntity.getStatusCode());
         assertNotNull(responseEntity.getBody());
-        assertEquals(ErrorResponse.ErrorCode.INTERNAL_ERROR, responseEntity.getBody().getCode());
-        assertEquals("An unexpected error occurred. Please try again later.", responseEntity.getBody().getMessage());
+        assertEquals(ErrorResponse.ErrorCode.INTERNAL_ERROR, responseEntity.getBody().code());
+        assertEquals("An unexpected error occurred. Please try again later.", responseEntity.getBody().message());
     }
 
     @Test
@@ -127,7 +127,7 @@ class GlobalExceptionHandlerTest {
         // Then
         assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
         assertNotNull(responseEntity.getBody());
-        assertEquals(ErrorResponse.ErrorCode.VALIDATION_ERROR, responseEntity.getBody().getCode());
-        assertEquals("Invalid argument", responseEntity.getBody().getMessage());
+        assertEquals(ErrorResponse.ErrorCode.VALIDATION_ERROR, responseEntity.getBody().code());
+        assertEquals("Invalid argument", responseEntity.getBody().message());
     }
 }

@@ -23,7 +23,7 @@ public class GlobalExceptionHandler {
         String traceId = UUID.randomUUID().toString();
         log.error("Resource not found [traceId={}]: {}", traceId, ex.getMessage());
         
-        ErrorResponse error = new ErrorResponse(
+        ErrorResponse error = ErrorResponse.of(
             ErrorResponse.ErrorCode.NOT_FOUND,
             ex.getMessage(),
             request.getRequestURI(),
@@ -39,7 +39,7 @@ public class GlobalExceptionHandler {
         String traceId = UUID.randomUUID().toString();
         log.error("Authorization error [traceId={}]: {}", traceId, ex.getMessage());
         
-        ErrorResponse error = new ErrorResponse(
+        ErrorResponse error = ErrorResponse.of(
             ErrorResponse.ErrorCode.AUTHORIZATION_ERROR,
             ex.getMessage(),
             request.getRequestURI(),
@@ -55,7 +55,7 @@ public class GlobalExceptionHandler {
         String traceId = UUID.randomUUID().toString();
         log.error("Order exception [traceId={}]: {}", traceId, ex.getMessage());
         
-        ErrorResponse error = new ErrorResponse(
+        ErrorResponse error = ErrorResponse.of(
             ErrorResponse.ErrorCode.VALIDATION_ERROR,
             ex.getMessage(),
             request.getRequestURI(),
@@ -81,9 +81,10 @@ public class GlobalExceptionHandler {
             ErrorResponse.ErrorCode.VALIDATION_ERROR,
             "Invalid input data",
             request.getRequestURI(),
-            traceId
+            null,
+            traceId,
+            details
         );
-        error.setDetails(details);
         
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
     }
@@ -94,7 +95,7 @@ public class GlobalExceptionHandler {
         String traceId = UUID.randomUUID().toString();
         log.error("Illegal argument [traceId={}]: {}", traceId, ex.getMessage());
         
-        ErrorResponse error = new ErrorResponse(
+        ErrorResponse error = ErrorResponse.of(
             ErrorResponse.ErrorCode.VALIDATION_ERROR,
             ex.getMessage(),
             request.getRequestURI(),
@@ -110,7 +111,7 @@ public class GlobalExceptionHandler {
         String traceId = UUID.randomUUID().toString();
         log.error("Unexpected error [traceId={}]", traceId, ex);
         
-        ErrorResponse error = new ErrorResponse(
+        ErrorResponse error = ErrorResponse.of(
             ErrorResponse.ErrorCode.INTERNAL_ERROR,
             "An unexpected error occurred. Please try again later.",
             request.getRequestURI(),

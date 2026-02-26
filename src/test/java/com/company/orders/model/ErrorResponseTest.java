@@ -16,49 +16,49 @@ class ErrorResponseTest {
     @Test
     @DisplayName("Should create ErrorResponse with code and message")
     void createWithCodeAndMessage() {
-        ErrorResponse response = new ErrorResponse(ErrorResponse.ErrorCode.VALIDATION_ERROR, "Validation failed");
+        ErrorResponse response = ErrorResponse.of(ErrorResponse.ErrorCode.VALIDATION_ERROR, "Validation failed");
         
-        assertEquals(ErrorResponse.ErrorCode.VALIDATION_ERROR, response.getCode());
-        assertEquals("Validation failed", response.getMessage());
-        assertNotNull(response.getTimestamp());
-        assertNull(response.getPath());
-        assertNull(response.getTraceId());
-        assertNull(response.getDetails());
+        assertEquals(ErrorResponse.ErrorCode.VALIDATION_ERROR, response.code());
+        assertEquals("Validation failed", response.message());
+        assertNotNull(response.timestamp());
+        assertNull(response.path());
+        assertNull(response.traceId());
+        assertNull(response.details());
     }
 
     @Test
     @DisplayName("Should create ErrorResponse with code, message and path")
     void createWithCodeMessageAndPath() {
-        ErrorResponse response = new ErrorResponse(
+        ErrorResponse response = ErrorResponse.of(
             ErrorResponse.ErrorCode.NOT_FOUND, 
             "Resource not found", 
             "/api/orders/123"
         );
         
-        assertEquals(ErrorResponse.ErrorCode.NOT_FOUND, response.getCode());
-        assertEquals("Resource not found", response.getMessage());
-        assertEquals("/api/orders/123", response.getPath());
-        assertNotNull(response.getTimestamp());
-        assertNull(response.getTraceId());
-        assertNull(response.getDetails());
+        assertEquals(ErrorResponse.ErrorCode.NOT_FOUND, response.code());
+        assertEquals("Resource not found", response.message());
+        assertEquals("/api/orders/123", response.path());
+        assertNotNull(response.timestamp());
+        assertNull(response.traceId());
+        assertNull(response.details());
     }
 
     @Test
     @DisplayName("Should create ErrorResponse with code, message, path and traceId")
     void createWithCodeMessagePathAndTraceId() {
-        ErrorResponse response = new ErrorResponse(
+        ErrorResponse response = ErrorResponse.of(
             ErrorResponse.ErrorCode.INTERNAL_ERROR, 
             "Internal server error", 
             "/api/orders",
             "trace-123"
         );
         
-        assertEquals(ErrorResponse.ErrorCode.INTERNAL_ERROR, response.getCode());
-        assertEquals("Internal server error", response.getMessage());
-        assertEquals("/api/orders", response.getPath());
-        assertEquals("trace-123", response.getTraceId());
-        assertNotNull(response.getTimestamp());
-        assertNull(response.getDetails());
+        assertEquals(ErrorResponse.ErrorCode.INTERNAL_ERROR, response.code());
+        assertEquals("Internal server error", response.message());
+        assertEquals("/api/orders", response.path());
+        assertEquals("trace-123", response.traceId());
+        assertNotNull(response.timestamp());
+        assertNull(response.details());
     }
 
     @Test
@@ -76,48 +76,56 @@ class ErrorResponseTest {
             details
         );
         
-        assertEquals(ErrorResponse.ErrorCode.AUTHORIZATION_ERROR, response.getCode());
-        assertEquals("Access denied", response.getMessage());
-        assertEquals("/api/orders", response.getPath());
-        assertEquals(now, response.getTimestamp());
-        assertEquals("trace-456", response.getTraceId());
-        assertEquals(details, response.getDetails());
-        assertEquals(2, response.getDetails().size());
+        assertEquals(ErrorResponse.ErrorCode.AUTHORIZATION_ERROR, response.code());
+        assertEquals("Access denied", response.message());
+        assertEquals("/api/orders", response.path());
+        assertEquals(now, response.timestamp());
+        assertEquals("trace-456", response.traceId());
+        assertEquals(details, response.details());
+        assertEquals(2, response.details().size());
     }
 
     @Test
-    @DisplayName("Should create ErrorResponse with no args constructor")
-    void createWithNoArgsConstructor() {
-        ErrorResponse response = new ErrorResponse();
+    @DisplayName("Should create ErrorResponse with null timestamp gets auto-filled")
+    void createWithNullTimestampGetsAutoFilled() {
+        ErrorResponse response = new ErrorResponse(
+            ErrorResponse.ErrorCode.VALIDATION_ERROR,
+            "Test message",
+            null,
+            null,
+            null,
+            null
+        );
         
-        assertNull(response.getCode());
-        assertNull(response.getMessage());
-        assertNull(response.getPath());
-        assertNull(response.getTimestamp());
-        assertNull(response.getTraceId());
-        assertNull(response.getDetails());
+        assertEquals(ErrorResponse.ErrorCode.VALIDATION_ERROR, response.code());
+        assertEquals("Test message", response.message());
+        assertNull(response.path());
+        assertNotNull(response.timestamp()); // Auto-filled by compact constructor
+        assertNull(response.traceId());
+        assertNull(response.details());
     }
 
     @Test
-    @DisplayName("Should set and get all fields")
-    void setAndGetAllFields() {
-        ErrorResponse response = new ErrorResponse();
+    @DisplayName("Should create ErrorResponse with all fields using constructor")
+    void createWithAllFields() {
         OffsetDateTime now = OffsetDateTime.now();
         List<String> details = Arrays.asList("Detail 1");
         
-        response.setCode(ErrorResponse.ErrorCode.RATE_LIMIT_EXCEEDED);
-        response.setMessage("Rate limit exceeded");
-        response.setPath("/api/orders");
-        response.setTimestamp(now);
-        response.setTraceId("trace-789");
-        response.setDetails(details);
+        ErrorResponse response = new ErrorResponse(
+            ErrorResponse.ErrorCode.RATE_LIMIT_EXCEEDED,
+            "Rate limit exceeded",
+            "/api/orders",
+            now,
+            "trace-789",
+            details
+        );
         
-        assertEquals(ErrorResponse.ErrorCode.RATE_LIMIT_EXCEEDED, response.getCode());
-        assertEquals("Rate limit exceeded", response.getMessage());
-        assertEquals("/api/orders", response.getPath());
-        assertEquals(now, response.getTimestamp());
-        assertEquals("trace-789", response.getTraceId());
-        assertEquals(details, response.getDetails());
+        assertEquals(ErrorResponse.ErrorCode.RATE_LIMIT_EXCEEDED, response.code());
+        assertEquals("Rate limit exceeded", response.message());
+        assertEquals("/api/orders", response.path());
+        assertEquals(now, response.timestamp());
+        assertEquals("trace-789", response.traceId());
+        assertEquals(details, response.details());
     }
 
     @Test
@@ -170,7 +178,7 @@ class ErrorResponseTest {
     @Test
     @DisplayName("Should test toString")
     void testToString() {
-        ErrorResponse response = new ErrorResponse(
+        ErrorResponse response = ErrorResponse.of(
             ErrorResponse.ErrorCode.VALIDATION_ERROR,
             "Validation failed"
         );
