@@ -222,7 +222,7 @@
             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
-                <version>0.8.12</version>
+                <version>0.8.14</version>
                 <executions>
                     <execution>
                         <goals>
@@ -230,36 +230,17 @@
                         </goals>
                     </execution>
                     <!-- Disabled report generation due to Java 25 compatibility -->
-                    <!-- <execution>
+                    <execution>
                         <id>report</id>
                         <phase>test</phase>
                         <goals>
                             <goal>report</goal>
                         </goals>
-                    </execution> -->
+                    </execution>
                 </executions>
             </plugin>
 
             <!-- SpotBugs for static analysis -->
-            <plugin>
-                <groupId>com.github.spotbugs</groupId>
-                <artifactId>spotbugs-maven-plugin</artifactId>
-                <version>4.8.5.0</version>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>check</goal>
-                        </goals>
-                        <phase>verify</phase>
-                    </execution>
-                </executions>
-                <configuration>
-                    <excludeFilterFile>spotbugs-exclude.xml</excludeFilterFile>
-                    <failOnError>false</failOnError>
-                </configuration>
-            </plugin>
-
-            <!-- SpotBugs Maven plugin for reporting -->
             <plugin>
                 <groupId>com.github.spotbugs</groupId>
                 <artifactId>spotbugs-maven-plugin</artifactId>
