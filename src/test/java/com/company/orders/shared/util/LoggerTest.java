@@ -1,4 +1,4 @@
-package com.company.orders.util;
+package com.company.orders.shared.util;
 
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.spi.ILoggingEvent;

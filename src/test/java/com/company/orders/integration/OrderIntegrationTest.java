@@ -39,7 +39,10 @@ class OrderIntegrationTest {
     @LocalServerPort
     private int port;
 
-    private final ObjectMapper objectMapper = new ObjectMapper().registerModule(new JavaTimeModule());
+    private final ObjectMapper objectMapper = new ObjectMapper()
+        .registerModule(new JavaTimeModule())
+        .configure(com.fasterxml.jackson.databind.SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false)
+        .configure(com.fasterxml.jackson.databind.DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
     private RestClient restClient;
 
@@ -83,10 +86,10 @@ class OrderIntegrationTest {
         assertEquals(HttpStatus.CREATED, createResponse.getStatusCode());
         assertNotNull(createResponse.getBody());
 
-        OrderDto createdOrder = objectMapper.readValue(createResponse.getBody(), OrderDto.class);
-        assertEquals("pending", createdOrder.getStatus());
+        com.company.orders.command.model.CreateOrderResult createdOrder = objectMapper.readValue(createResponse.getBody(), com.company.orders.command.model.CreateOrderResult.class);
+        assertEquals("PENDING", createdOrder.status());
 
-        UUID orderId = createdOrder.getId();
+        UUID orderId = createdOrder.orderId();
         assertNotNull(orderId);
 
         ResponseEntity<String> getResponse = restClient
@@ -98,9 +101,9 @@ class OrderIntegrationTest {
         assertEquals(HttpStatus.OK, getResponse.getStatusCode());
         assertNotNull(getResponse.getBody());
 
-        OrderDto fetchedOrder = objectMapper.readValue(getResponse.getBody(), OrderDto.class);
-        assertEquals(orderId, fetchedOrder.getId());
-        assertEquals("pending", fetchedOrder.getStatus());
+        com.company.orders.query.model.OrderQueryResult fetchedOrder = objectMapper.readValue(getResponse.getBody(), com.company.orders.query.model.OrderQueryResult.class);
+        assertEquals(orderId, fetchedOrder.id());
+        assertEquals("pending", fetchedOrder.status());
     }
 
     @Test

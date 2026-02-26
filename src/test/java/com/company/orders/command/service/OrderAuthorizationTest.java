@@ -1,7 +1,7 @@
-package com.company.orders.service;
+package com.company.orders.command.service;
 
-import com.company.orders.entity.Order;
-import com.company.orders.exception.AuthorizationException;
+import com.company.orders.domain.entity.Order;
+import com.company.orders.shared.exception.AuthorizationException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

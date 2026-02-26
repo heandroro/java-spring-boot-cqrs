@@ -1,6 +1,6 @@
-package com.company.orders.entity;
+package com.company.orders.domain.entity;
 
-import com.company.orders.enums.OrderStatus;
+import com.company.orders.domain.enums.OrderStatus;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

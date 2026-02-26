@@ -1,7 +1,7 @@
-package com.company.orders.service;
+package com.company.orders.command.service;
 
 import com.company.orders.dto.OrderItemDto;
-import com.company.orders.exception.OrderException;
+import com.company.orders.shared.exception.OrderException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
