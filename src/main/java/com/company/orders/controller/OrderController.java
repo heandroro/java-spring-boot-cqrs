@@ -24,7 +24,7 @@ import java.util.UUID;
 @RequestMapping("/orders")
 @RequiredArgsConstructor
 @Tag(name = "Orders", description = "Order management operations")
-public class OrderController {
+public class OrderController implements OrderControllerApi {
 
     private final OrderService service;
 
