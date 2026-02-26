@@ -36,20 +36,20 @@ public class OrderService {
 
     @Transactional
     public OrderDto createOrder(CreateOrderRequest request, UUID authenticatedCustomerId) {
-        log.info("Creating new order for customer: {}", request.getCustomerId());
+        log.info("Creating new order for customer: {}", request.customerId());
         
-        if (!Arrays.asList(environment.getActiveProfiles()).contains("test") && !request.getCustomerId().equals(authenticatedCustomerId)) {
+        if (!Arrays.asList(environment.getActiveProfiles()).contains("test") && !request.customerId().equals(authenticatedCustomerId)) {
             throw new AuthorizationException("Cannot create order for another customer");
         }
 
-        if (request.getItems() == null || request.getItems().isEmpty()) {
+        if (request.items() == null || request.items().isEmpty()) {
             throw new OrderException("Order must have at least one item");
         }
 
         Order order = mapper.toEntity(request);
-        order.setCustomerId(request.getCustomerId());
+        order.setCustomerId(request.customerId());
 
-        for (OrderItemDto itemDto : request.getItems()) {
+        for (OrderItemDto itemDto : request.items()) {
             validateItem(itemDto);
             OrderItem item = mapper.toItemEntity(itemDto);
             item.calculateSubtotal();
@@ -134,13 +134,13 @@ public class OrderService {
     }
 
     private void validateItem(OrderItemDto item) {
-        if (item.getQuantity() == null || item.getQuantity() < 1) {
+        if (item.quantity() == null || item.quantity() < 1) {
             throw new OrderException("Item quantity must be at least 1");
         }
-        if (item.getPricePerUnit() == null || item.getPricePerUnit().compareTo(BigDecimal.ZERO) <= 0) {
+        if (item.pricePerUnit() == null || item.pricePerUnit().compareTo(BigDecimal.ZERO) <= 0) {
             throw new OrderException("Item price must be greater than zero");
         }
-        if (item.getProductId() == null || item.getProductId().trim().isEmpty()) {
+        if (item.productId() == null || item.productId().trim().isEmpty()) {
             throw new OrderException("Item product ID is required");
         }
     }

@@ -60,14 +60,17 @@ class OrderIntegrationTest {
     void testFullOrderLifecycle() throws Exception {
         UUID customerId = UUID.fromString("a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11");
         
-        OrderItemDto itemDto = new OrderItemDto();
-        itemDto.setProductId("p123");
-        itemDto.setQuantity(2);
-        itemDto.setPricePerUnit(BigDecimal.valueOf(99.99));
+        OrderItemDto itemDto = new OrderItemDto(
+            "p123",
+            2,
+            BigDecimal.valueOf(99.99),
+            BigDecimal.valueOf(199.98)
+        );
 
-        CreateOrderRequest createRequest = new CreateOrderRequest();
-        createRequest.setCustomerId(customerId);
-        createRequest.setItems(Arrays.asList(itemDto));
+        CreateOrderRequest createRequest = new CreateOrderRequest(
+            customerId,
+            Arrays.asList(itemDto)
+        );
 
         ResponseEntity<String> createResponse = restClient
             .post()
@@ -113,9 +116,9 @@ class OrderIntegrationTest {
         assertNotNull(response.getBody());
 
         OrderListResponse parsed = objectMapper.readValue(response.getBody(), OrderListResponse.class);
-        assertEquals(20, parsed.getLimit());
-        assertEquals(0, parsed.getOffset());
-        assertNotNull(parsed.getData());
+        assertEquals(20, parsed.limit());
+        assertEquals(0, parsed.offset());
+        assertNotNull(parsed.data());
     }
 
     @Test
@@ -131,6 +134,6 @@ class OrderIntegrationTest {
         assertNotNull(response.getBody());
 
         OrderListResponse parsed = objectMapper.readValue(response.getBody(), OrderListResponse.class);
-        assertNotNull(parsed.getData());
+        assertNotNull(parsed.data());
     }
 }

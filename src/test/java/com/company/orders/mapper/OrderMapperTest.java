@@ -53,14 +53,17 @@ class OrderMapperTest {
         orderItem.setCreatedAt(OffsetDateTime.now());
         order.addItem(orderItem);
 
-        orderItemDto = new OrderItemDto();
-        orderItemDto.setProductId("p456");
-        orderItemDto.setQuantity(1);
-        orderItemDto.setPricePerUnit(BigDecimal.valueOf(49.99));
+        orderItemDto = new OrderItemDto(
+            "p456",
+            1,
+            BigDecimal.valueOf(49.99),
+            BigDecimal.valueOf(49.99)
+        );
 
-        createRequest = new CreateOrderRequest();
-        createRequest.setCustomerId(customerId);
-        createRequest.setItems(Arrays.asList(orderItemDto));
+        createRequest = new CreateOrderRequest(
+            customerId,
+            Arrays.asList(orderItemDto)
+        );
     }
 
     @Test
@@ -83,10 +86,10 @@ class OrderMapperTest {
         OrderItemDto dto = mapper.toItemDto(orderItem);
 
         assertNotNull(dto);
-        assertEquals(orderItem.getProductId(), dto.getProductId());
-        assertEquals(orderItem.getQuantity(), dto.getQuantity());
-        assertEquals(orderItem.getPricePerUnit(), dto.getPricePerUnit());
-        assertEquals(orderItem.getSubtotal(), dto.getSubtotal());
+        assertEquals(orderItem.getProductId(), dto.productId());
+        assertEquals(orderItem.getQuantity(), dto.quantity());
+        assertEquals(orderItem.getPricePerUnit(), dto.pricePerUnit());
+        assertEquals(orderItem.getSubtotal(), dto.subtotal());
     }
 
     @Test
@@ -113,7 +116,7 @@ class OrderMapperTest {
         Order entity = mapper.toEntity(createRequest);
 
         assertNotNull(entity);
-        assertEquals(createRequest.getCustomerId(), entity.getCustomerId());
+        assertEquals(createRequest.customerId(), entity.getCustomerId());
         assertEquals(Order.OrderStatus.PENDING, entity.getStatus());
         assertNull(entity.getId());
         assertNull(entity.getCreatedAt());
@@ -126,9 +129,9 @@ class OrderMapperTest {
         OrderItem entity = mapper.toItemEntity(orderItemDto);
 
         assertNotNull(entity);
-        assertEquals(orderItemDto.getProductId(), entity.getProductId());
-        assertEquals(orderItemDto.getQuantity(), entity.getQuantity());
-        assertEquals(orderItemDto.getPricePerUnit(), entity.getPricePerUnit());
+        assertEquals(orderItemDto.productId(), entity.getProductId());
+        assertEquals(orderItemDto.quantity(), entity.getQuantity());
+        assertEquals(orderItemDto.pricePerUnit(), entity.getPricePerUnit());
         assertNull(entity.getId());
         assertNull(entity.getOrder());
         assertNull(entity.getCreatedAt());

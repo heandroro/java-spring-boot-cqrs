@@ -86,14 +86,17 @@ class OrderServiceTest {
         orderDto.setStatus("pending");
         orderDto.setTotal(BigDecimal.valueOf(249.97));
 
-        OrderItemDto itemDto = new OrderItemDto();
-        itemDto.setProductId("p123");
-        itemDto.setQuantity(2);
-        itemDto.setPricePerUnit(BigDecimal.valueOf(99.99));
+        OrderItemDto itemDto = new OrderItemDto(
+            "p123",
+            2,
+            BigDecimal.valueOf(99.99),
+            BigDecimal.valueOf(199.98)
+        );
 
-        createRequest = new CreateOrderRequest();
-        createRequest.setCustomerId(testCustomerId);
-        createRequest.setItems(Arrays.asList(itemDto));
+        createRequest = new CreateOrderRequest(
+            testCustomerId,
+            Arrays.asList(itemDto)
+        );
     }
 
     @Test
@@ -124,10 +127,10 @@ class OrderServiceTest {
     @Test
     @DisplayName("Should throw exception when items are empty")
     void testCreateOrder_ShouldThrowException_WhenItemsEmpty() {
-        createRequest.setItems(Arrays.asList());
+        CreateOrderRequest emptyRequest = new CreateOrderRequest(testCustomerId, Arrays.asList());
 
         assertThrows(OrderException.class, 
-            () -> service.createOrder(createRequest, testCustomerId));
+            () -> service.createOrder(emptyRequest, testCustomerId));
         verify(repository, never()).save(any(Order.class));
     }
 
@@ -187,8 +190,8 @@ class OrderServiceTest {
         OrderListResponse result = service.listOrders(testCustomerId, false, 20, 0, null);
 
         assertNotNull(result);
-        assertEquals(1, result.getData().size());
-        assertEquals(1L, result.getTotalCount());
+        assertEquals(1, result.data().size());
+        assertEquals(1L, result.totalCount());
         verify(repository).findByCustomerId(eq(testCustomerId), any(Pageable.class));
     }
 
@@ -203,136 +206,115 @@ class OrderServiceTest {
         OrderListResponse result = service.listOrders(testCustomerId, false, 20, 0, "pending");
 
         assertNotNull(result);
-        assertEquals(1, result.getData().size());
+        assertEquals(1, result.data().size());
         verify(repository).findByCustomerIdAndStatus(eq(testCustomerId), any(), any(Pageable.class));
     }
 
     @Test
     @DisplayName("Should throw exception when item quantity is null")
     void testCreateOrder_ShouldThrowException_WhenQuantityIsNull() {
-        OrderItemDto itemDto = new OrderItemDto();
-        itemDto.setProductId("p123");
-        itemDto.setQuantity(null);
-        itemDto.setPricePerUnit(BigDecimal.valueOf(99.99));
-        createRequest.setItems(Arrays.asList(itemDto));
+        OrderItemDto itemDto = new OrderItemDto("p123", null, BigDecimal.valueOf(99.99), null);
+        CreateOrderRequest request = new CreateOrderRequest(testCustomerId, Arrays.asList(itemDto));
 
-        when(mapper.toEntity(createRequest)).thenReturn(order);
+        when(mapper.toEntity(request)).thenReturn(order);
         when(mapper.toItemEntity(any(OrderItemDto.class))).thenReturn(new OrderItem());
 
         assertThrows(OrderException.class, 
-            () -> service.createOrder(createRequest, testCustomerId));
+            () -> service.createOrder(request, testCustomerId));
         verify(repository, never()).save(any(Order.class));
     }
 
     @Test
     @DisplayName("Should throw exception when item quantity is less than 1")
     void testCreateOrder_ShouldThrowException_WhenQuantityLessThanOne() {
-        OrderItemDto itemDto = new OrderItemDto();
-        itemDto.setProductId("p123");
-        itemDto.setQuantity(0);
-        itemDto.setPricePerUnit(BigDecimal.valueOf(99.99));
-        createRequest.setItems(Arrays.asList(itemDto));
+        OrderItemDto itemDto = new OrderItemDto("p123", 0, BigDecimal.valueOf(99.99), null);
+        CreateOrderRequest request = new CreateOrderRequest(testCustomerId, Arrays.asList(itemDto));
 
-        when(mapper.toEntity(createRequest)).thenReturn(order);
+        when(mapper.toEntity(request)).thenReturn(order);
         when(mapper.toItemEntity(any(OrderItemDto.class))).thenReturn(new OrderItem());
 
         assertThrows(OrderException.class, 
-            () -> service.createOrder(createRequest, testCustomerId));
+            () -> service.createOrder(request, testCustomerId));
         verify(repository, never()).save(any(Order.class));
     }
 
     @Test
     @DisplayName("Should throw exception when item price is null")
     void testCreateOrder_ShouldThrowException_WhenPriceIsNull() {
-        OrderItemDto itemDto = new OrderItemDto();
-        itemDto.setProductId("p123");
-        itemDto.setQuantity(2);
-        itemDto.setPricePerUnit(null);
-        createRequest.setItems(Arrays.asList(itemDto));
+        OrderItemDto itemDto = new OrderItemDto("p123", 2, null, null);
+        CreateOrderRequest request = new CreateOrderRequest(testCustomerId, Arrays.asList(itemDto));
 
-        when(mapper.toEntity(createRequest)).thenReturn(order);
+        when(mapper.toEntity(request)).thenReturn(order);
         when(mapper.toItemEntity(any(OrderItemDto.class))).thenReturn(new OrderItem());
 
         assertThrows(OrderException.class, 
-            () -> service.createOrder(createRequest, testCustomerId));
+            () -> service.createOrder(request, testCustomerId));
         verify(repository, never()).save(any(Order.class));
     }
 
     @Test
     @DisplayName("Should throw exception when item price is zero or less")
     void testCreateOrder_ShouldThrowException_WhenPriceIsZeroOrLess() {
-        OrderItemDto itemDto = new OrderItemDto();
-        itemDto.setProductId("p123");
-        itemDto.setQuantity(2);
-        itemDto.setPricePerUnit(BigDecimal.ZERO);
-        createRequest.setItems(Arrays.asList(itemDto));
+        OrderItemDto itemDto = new OrderItemDto("p123", 2, BigDecimal.ZERO, null);
+        CreateOrderRequest request = new CreateOrderRequest(testCustomerId, Arrays.asList(itemDto));
 
-        when(mapper.toEntity(createRequest)).thenReturn(order);
+        when(mapper.toEntity(request)).thenReturn(order);
         when(mapper.toItemEntity(any(OrderItemDto.class))).thenReturn(new OrderItem());
 
         assertThrows(OrderException.class, 
-            () -> service.createOrder(createRequest, testCustomerId));
+            () -> service.createOrder(request, testCustomerId));
         verify(repository, never()).save(any(Order.class));
     }
 
     @Test
     @DisplayName("Should throw exception when item productId is null")
     void testCreateOrder_ShouldThrowException_WhenProductIdIsNull() {
-        OrderItemDto itemDto = new OrderItemDto();
-        itemDto.setProductId(null);
-        itemDto.setQuantity(2);
-        itemDto.setPricePerUnit(BigDecimal.valueOf(99.99));
-        createRequest.setItems(Arrays.asList(itemDto));
+        OrderItemDto itemDto = new OrderItemDto(null, 2, BigDecimal.valueOf(99.99), null);
+        CreateOrderRequest request = new CreateOrderRequest(testCustomerId, Arrays.asList(itemDto));
 
-        when(mapper.toEntity(createRequest)).thenReturn(order);
+        when(mapper.toEntity(request)).thenReturn(order);
         when(mapper.toItemEntity(any(OrderItemDto.class))).thenReturn(new OrderItem());
 
         assertThrows(OrderException.class, 
-            () -> service.createOrder(createRequest, testCustomerId));
+            () -> service.createOrder(request, testCustomerId));
         verify(repository, never()).save(any(Order.class));
     }
 
     @Test
     @DisplayName("Should throw exception when item productId is empty")
     void testCreateOrder_ShouldThrowException_WhenProductIdIsEmpty() {
-        OrderItemDto itemDto = new OrderItemDto();
-        itemDto.setProductId("");
-        itemDto.setQuantity(2);
-        itemDto.setPricePerUnit(BigDecimal.valueOf(99.99));
-        createRequest.setItems(Arrays.asList(itemDto));
+        OrderItemDto itemDto = new OrderItemDto("", 2, BigDecimal.valueOf(99.99), null);
+        CreateOrderRequest request = new CreateOrderRequest(testCustomerId, Arrays.asList(itemDto));
 
-        when(mapper.toEntity(createRequest)).thenReturn(order);
+        when(mapper.toEntity(request)).thenReturn(order);
         when(mapper.toItemEntity(any(OrderItemDto.class))).thenReturn(new OrderItem());
 
         assertThrows(OrderException.class, 
-            () -> service.createOrder(createRequest, testCustomerId));
+            () -> service.createOrder(request, testCustomerId));
         verify(repository, never()).save(any(Order.class));
     }
 
     @Test
     @DisplayName("Should throw exception when item productId is whitespace")
     void testCreateOrder_ShouldThrowException_WhenProductIdIsWhitespace() {
-        OrderItemDto itemDto = new OrderItemDto();
-        itemDto.setProductId("   ");
-        itemDto.setQuantity(2);
-        itemDto.setPricePerUnit(BigDecimal.valueOf(99.99));
-        createRequest.setItems(Arrays.asList(itemDto));
+        OrderItemDto itemDto = new OrderItemDto("   ", 2, BigDecimal.valueOf(99.99), null);
+        CreateOrderRequest request = new CreateOrderRequest(testCustomerId, Arrays.asList(itemDto));
 
-        when(mapper.toEntity(createRequest)).thenReturn(order);
+        when(mapper.toEntity(request)).thenReturn(order);
         when(mapper.toItemEntity(any(OrderItemDto.class))).thenReturn(new OrderItem());
 
         assertThrows(OrderException.class, 
-            () -> service.createOrder(createRequest, testCustomerId));
+            () -> service.createOrder(request, testCustomerId));
         verify(repository, never()).save(any(Order.class));
     }
 
     @Test
     @DisplayName("Should throw exception when items list is null")
     void testCreateOrder_ShouldThrowException_WhenItemsIsNull() {
-        createRequest.setItems(null);
+        CreateOrderRequest nullItemsRequest = new CreateOrderRequest(testCustomerId, null);
 
         assertThrows(OrderException.class, 
-            () -> service.createOrder(createRequest, testCustomerId));
+            () -> service.createOrder(nullItemsRequest, testCustomerId));
         verify(repository, never()).save(any(Order.class));
     }
 
@@ -364,7 +346,7 @@ class OrderServiceTest {
         OrderListResponse result = service.listOrders(testCustomerId, true, 20, 0, null);
 
         assertNotNull(result);
-        assertEquals(1, result.getData().size());
+        assertEquals(1, result.data().size());
         verify(repository).findAll(any(Pageable.class));
         verify(repository).count();
     }
@@ -380,7 +362,7 @@ class OrderServiceTest {
         OrderListResponse result = service.listOrders(testCustomerId, true, 20, 0, "pending");
 
         assertNotNull(result);
-        assertEquals(1, result.getData().size());
+        assertEquals(1, result.data().size());
         verify(repository).findByStatus(any(), any(Pageable.class));
         verify(repository).count();
     }
@@ -396,8 +378,8 @@ class OrderServiceTest {
         OrderListResponse result = service.listOrders(testCustomerId, false, null, 0, null);
 
         assertNotNull(result);
-        assertEquals(1, result.getData().size());
-        assertEquals(20, result.getLimit());
+        assertEquals(1, result.data().size());
+        assertEquals(20, result.limit());
         verify(repository).findByCustomerId(eq(testCustomerId), any(Pageable.class));
     }
 
@@ -412,8 +394,8 @@ class OrderServiceTest {
         OrderListResponse result = service.listOrders(testCustomerId, false, 20, null, null);
 
         assertNotNull(result);
-        assertEquals(1, result.getData().size());
-        assertEquals(0, result.getOffset());
+        assertEquals(1, result.data().size());
+        assertEquals(0, result.offset());
         verify(repository).findByCustomerId(eq(testCustomerId), any(Pageable.class));
     }
 
@@ -428,9 +410,9 @@ class OrderServiceTest {
         OrderListResponse result = service.listOrders(testCustomerId, false, null, null, null);
 
         assertNotNull(result);
-        assertEquals(1, result.getData().size());
-        assertEquals(20, result.getLimit());
-        assertEquals(0, result.getOffset());
+        assertEquals(1, result.data().size());
+        assertEquals(20, result.limit());
+        assertEquals(0, result.offset());
         verify(repository).findByCustomerId(eq(testCustomerId), any(Pageable.class));
     }
 }

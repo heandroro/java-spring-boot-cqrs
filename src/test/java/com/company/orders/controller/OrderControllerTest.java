@@ -72,14 +72,17 @@ class OrderControllerTest {
         orderDto.setStatus("pending");
         orderDto.setTotal(BigDecimal.valueOf(249.97));
 
-        OrderItemDto itemDto = new OrderItemDto();
-        itemDto.setProductId("p123");
-        itemDto.setQuantity(2);
-        itemDto.setPricePerUnit(BigDecimal.valueOf(99.99));
+        OrderItemDto itemDto = new OrderItemDto(
+            "p123",
+            2,
+            BigDecimal.valueOf(99.99),
+            BigDecimal.valueOf(199.98)
+        );
 
-        createRequest = new CreateOrderRequest();
-        createRequest.setCustomerId(testCustomerId);
-        createRequest.setItems(Arrays.asList(itemDto));
+        createRequest = new CreateOrderRequest(
+            testCustomerId,
+            Arrays.asList(itemDto)
+        );
     }
 
     @Test
@@ -129,9 +132,7 @@ class OrderControllerTest {
     @Test
     @DisplayName("Should return 400 when validation fails")
     void testCreateOrder_ShouldReturnStatus400_WhenValidationFails() throws Exception {
-        CreateOrderRequest invalidRequest = new CreateOrderRequest();
-        invalidRequest.setCustomerId(null);
-        invalidRequest.setItems(Arrays.asList());
+        CreateOrderRequest invalidRequest = new CreateOrderRequest(null, Arrays.asList());
 
         mockMvc.perform(post("/orders")
                 .contentType(MediaType.APPLICATION_JSON)

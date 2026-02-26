@@ -32,7 +32,7 @@ public class OrderController implements OrderControllerApi {
             @Valid @RequestBody CreateOrderRequest request,
             Authentication authentication) {
         
-        UUID customerId = extractCustomerId(authentication, request.getCustomerId());
+        UUID customerId = extractCustomerId(authentication, request.customerId());
         OrderDto created = service.createOrder(request, customerId);
         return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }
