@@ -1,6 +1,6 @@
 package com.company.orders.command.service;
 
-import com.company.orders.dto.OrderItemDto;
+import com.company.orders.shared.model.OrderItemDto;
 import com.company.orders.shared.exception.OrderException;
 import org.springframework.stereotype.Component;
 

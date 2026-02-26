@@ -1,4 +1,4 @@
-package com.company.orders.dto;
+package com.company.orders.shared.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 

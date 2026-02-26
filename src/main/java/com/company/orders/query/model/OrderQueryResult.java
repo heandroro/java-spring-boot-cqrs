@@ -1,6 +1,6 @@
 package com.company.orders.query.model;
 
-import com.company.orders.dto.OrderItemDto;
+import com.company.orders.shared.model.OrderItemDto;
 
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;

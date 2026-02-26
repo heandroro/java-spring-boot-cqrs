@@ -5,7 +5,7 @@ import com.company.orders.command.model.CreateOrderResult;
 import com.company.orders.command.repository.OrderCommandRepository;
 import com.company.orders.command.service.OrderAuthorization;
 import com.company.orders.command.service.OrderValidator;
-import com.company.orders.dto.OrderItemDto;
+import com.company.orders.shared.model.OrderItemDto;
 import com.company.orders.domain.entity.Order;
 import com.company.orders.domain.entity.OrderItem;
 import com.company.orders.shared.exception.OrderException;

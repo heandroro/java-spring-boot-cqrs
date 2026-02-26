@@ -1,6 +1,6 @@
 package com.company.orders.shared.mapper;
 
-import com.company.orders.dto.OrderItemDto;
+import com.company.orders.shared.model.OrderItemDto;
 import com.company.orders.domain.entity.Order;
 import com.company.orders.domain.entity.OrderItem;
 import com.company.orders.domain.enums.OrderStatus;

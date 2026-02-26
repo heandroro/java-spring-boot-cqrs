@@ -1,6 +1,6 @@
 package com.company.orders.model;
 
-import com.company.orders.dto.ErrorResponse;
+import com.company.orders.shared.model.ErrorResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

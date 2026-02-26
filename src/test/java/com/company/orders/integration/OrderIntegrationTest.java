@@ -1,9 +1,7 @@
 package com.company.orders.integration;
 
-import com.company.orders.dto.CreateOrderRequest;
-import com.company.orders.dto.OrderDto;
-import com.company.orders.dto.OrderItemDto;
-import com.company.orders.dto.OrderListResponse;
+import com.company.orders.command.model.CreateOrderCommand;
+import com.company.orders.shared.model.OrderItemDto;
 import com.company.orders.command.repository.OrderCommandRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
@@ -70,7 +68,7 @@ class OrderIntegrationTest {
             BigDecimal.valueOf(199.98)
         );
 
-        CreateOrderRequest createRequest = new CreateOrderRequest(
+        CreateOrderCommand createCommand = new CreateOrderCommand(
             customerId,
             Arrays.asList(itemDto)
         );
@@ -79,7 +77,7 @@ class OrderIntegrationTest {
             .post()
             .uri("/orders")
             .contentType(MediaType.APPLICATION_JSON)
-            .body(createRequest)
+            .body(createCommand)
             .retrieve()
             .toEntity(String.class);
 
@@ -118,7 +116,7 @@ class OrderIntegrationTest {
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertNotNull(response.getBody());
 
-        OrderListResponse parsed = objectMapper.readValue(response.getBody(), OrderListResponse.class);
+        com.company.orders.query.model.OrderListQueryResult parsed = objectMapper.readValue(response.getBody(), com.company.orders.query.model.OrderListQueryResult.class);
         assertEquals(20, parsed.limit());
         assertEquals(0, parsed.offset());
         assertNotNull(parsed.data());
@@ -136,7 +134,7 @@ class OrderIntegrationTest {
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertNotNull(response.getBody());
 
-        OrderListResponse parsed = objectMapper.readValue(response.getBody(), OrderListResponse.class);
+        com.company.orders.query.model.OrderListQueryResult parsed = objectMapper.readValue(response.getBody(), com.company.orders.query.model.OrderListQueryResult.class);
         assertNotNull(parsed.data());
     }
 }

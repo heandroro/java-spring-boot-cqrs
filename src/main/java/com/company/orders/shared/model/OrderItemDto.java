@@ -1,4 +1,4 @@
-package com.company.orders.dto;
+package com.company.orders.shared.model;
 
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;

@@ -1,6 +1,6 @@
 package com.company.orders.command.model;
 
-import com.company.orders.dto.OrderItemDto;
+import com.company.orders.shared.model.OrderItemDto;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;

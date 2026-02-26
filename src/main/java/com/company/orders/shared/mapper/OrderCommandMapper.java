@@ -2,7 +2,7 @@ package com.company.orders.shared.mapper;
 
 import com.company.orders.command.model.CreateOrderCommand;
 import com.company.orders.command.model.CreateOrderResult;
-import com.company.orders.dto.OrderItemDto;
+import com.company.orders.shared.model.OrderItemDto;
 import com.company.orders.domain.entity.Order;
 import com.company.orders.domain.entity.OrderItem;
 import org.mapstruct.Mapper;
