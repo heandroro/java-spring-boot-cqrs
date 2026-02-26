@@ -1,4 +1,4 @@
-package com.company.orders.model;
+package com.company.orders.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;

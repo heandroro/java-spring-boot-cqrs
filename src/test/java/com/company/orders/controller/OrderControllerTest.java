@@ -1,10 +1,10 @@
 package com.company.orders.controller;
 
 import com.company.orders.exception.GlobalExceptionHandler;
-import com.company.orders.model.CreateOrderRequest;
-import com.company.orders.model.OrderDto;
-import com.company.orders.model.OrderItemDto;
-import com.company.orders.model.OrderListResponse;
+import com.company.orders.dto.CreateOrderRequest;
+import com.company.orders.dto.OrderDto;
+import com.company.orders.dto.OrderItemDto;
+import com.company.orders.dto.OrderListResponse;
 import com.company.orders.service.OrderService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;

@@ -1,9 +1,9 @@
 package com.company.orders.integration;
 
-import com.company.orders.model.CreateOrderRequest;
-import com.company.orders.model.OrderDto;
-import com.company.orders.model.OrderItemDto;
-import com.company.orders.model.OrderListResponse;
+import com.company.orders.dto.CreateOrderRequest;
+import com.company.orders.dto.OrderDto;
+import com.company.orders.dto.OrderItemDto;
+import com.company.orders.dto.OrderListResponse;
 import com.company.orders.repository.OrderRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;

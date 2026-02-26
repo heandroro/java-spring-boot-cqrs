@@ -1,6 +1,6 @@
 package com.company.orders.exception;
 
-import com.company.orders.model.ErrorResponse;
+import com.company.orders.dto.ErrorResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

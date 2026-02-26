@@ -1,6 +1,10 @@
 package com.company.orders.mapper;
 
-import com.company.orders.model.*;
+import com.company.orders.dto.CreateOrderRequest;
+import com.company.orders.dto.OrderDto;
+import com.company.orders.dto.OrderItemDto;
+import com.company.orders.model.Order;
+import com.company.orders.model.OrderItem;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

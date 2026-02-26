@@ -1,4 +1,4 @@
-package com.company.orders.model;
+package com.company.orders.dto;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotEmpty;

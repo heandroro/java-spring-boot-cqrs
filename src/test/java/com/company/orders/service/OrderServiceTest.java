@@ -1,10 +1,15 @@
 package com.company.orders.service;
 
+import com.company.orders.dto.CreateOrderRequest;
+import com.company.orders.dto.OrderDto;
+import com.company.orders.dto.OrderItemDto;
+import com.company.orders.dto.OrderListResponse;
 import com.company.orders.exception.AuthorizationException;
 import com.company.orders.exception.OrderException;
 import com.company.orders.exception.ResourceNotFoundException;
 import com.company.orders.mapper.OrderMapper;
-import com.company.orders.model.*;
+import com.company.orders.model.Order;
+import com.company.orders.model.OrderItem;
 import com.company.orders.repository.OrderRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

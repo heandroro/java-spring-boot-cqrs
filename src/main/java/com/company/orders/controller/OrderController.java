@@ -1,8 +1,8 @@
 package com.company.orders.controller;
 
-import com.company.orders.model.CreateOrderRequest;
-import com.company.orders.model.OrderDto;
-import com.company.orders.model.OrderListResponse;
+import com.company.orders.dto.CreateOrderRequest;
+import com.company.orders.dto.OrderDto;
+import com.company.orders.dto.OrderListResponse;
 import com.company.orders.service.OrderService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
