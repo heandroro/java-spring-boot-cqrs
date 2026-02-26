@@ -3,7 +3,8 @@ package com.company.orders.controller;
 import com.company.orders.dto.CreateOrderRequest;
 import com.company.orders.dto.OrderDto;
 import com.company.orders.dto.OrderListResponse;
-import com.company.orders.service.OrderService;
+import com.company.orders.service.OrderCreation;
+import com.company.orders.service.OrderQuery;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -25,7 +26,8 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class OrderController implements OrderControllerApi {
 
-    private final OrderService service;
+    private final OrderCreation orderCreation;
+    private final OrderQuery orderQuery;
 
     @Override
     public ResponseEntity<OrderDto> createOrder(
@@ -33,7 +35,7 @@ public class OrderController implements OrderControllerApi {
             Authentication authentication) {
         
         UUID customerId = extractCustomerId(authentication, request.customerId());
-        OrderDto created = service.createOrder(request, customerId);
+        OrderDto created = orderCreation.createOrder(request, customerId);
         return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }
 
@@ -47,7 +49,7 @@ public class OrderController implements OrderControllerApi {
         UUID customerId = extractCustomerId(authentication);
         boolean isAdmin = isAdmin(authentication);
         
-        OrderListResponse response = service.listOrders(customerId, isAdmin, limit, offset, status);
+        OrderListResponse response = orderQuery.listOrders(customerId, isAdmin, limit, offset, status);
         return ResponseEntity.ok(response);
     }
 
@@ -59,7 +61,7 @@ public class OrderController implements OrderControllerApi {
         UUID customerId = extractCustomerId(authentication);
         boolean isAdmin = isAdmin(authentication);
         
-        OrderDto order = service.getOrder(orderId, customerId, isAdmin);
+        OrderDto order = orderQuery.getOrder(orderId, customerId, isAdmin);
         return ResponseEntity.ok(order);
     }
 

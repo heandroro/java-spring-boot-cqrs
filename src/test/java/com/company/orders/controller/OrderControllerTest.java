@@ -5,7 +5,8 @@ import com.company.orders.dto.CreateOrderRequest;
 import com.company.orders.dto.OrderDto;
 import com.company.orders.dto.OrderItemDto;
 import com.company.orders.dto.OrderListResponse;
-import com.company.orders.service.OrderService;
+import com.company.orders.service.OrderCreation;
+import com.company.orders.service.OrderQuery;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -43,7 +44,10 @@ class OrderControllerTest {
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     @Mock
-    private OrderService service;
+    private OrderCreation orderCreation;
+
+    @Mock
+    private OrderQuery orderQuery;
 
     private OrderDto orderDto;
     private CreateOrderRequest createRequest;
@@ -52,7 +56,7 @@ class OrderControllerTest {
 
     @BeforeEach
     void setUp() {
-        OrderController controller = new OrderController(service);
+        OrderController controller = new OrderController(orderCreation, orderQuery);
 
         LocalValidatorFactoryBean validator = new LocalValidatorFactoryBean();
         validator.afterPropertiesSet();
@@ -88,7 +92,7 @@ class OrderControllerTest {
     @Test
     @DisplayName("Should create order and return 201 status")
     void testCreateOrder_ShouldReturnStatus201() throws Exception {
-        when(service.createOrder(any(CreateOrderRequest.class), any(UUID.class))).thenReturn(orderDto);
+        when(orderCreation.createOrder(any(CreateOrderRequest.class), any(UUID.class))).thenReturn(orderDto);
 
         mockMvc.perform(post("/orders")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -101,7 +105,7 @@ class OrderControllerTest {
     @Test
     @DisplayName("Should get order by ID and return 200 status")
     void testGetOrder_ShouldReturnStatus200() throws Exception {
-        when(service.getOrder(eq(testOrderId), any(UUID.class), any(Boolean.class))).thenReturn(orderDto);
+        when(orderQuery.getOrder(eq(testOrderId), any(UUID.class), any(Boolean.class))).thenReturn(orderDto);
 
         mockMvc.perform(get("/orders/{orderId}", testOrderId))
                 .andExpect(status().isOk())
@@ -118,7 +122,7 @@ class OrderControllerTest {
             20,
             0
         );
-        when(service.listOrders(any(UUID.class), any(Boolean.class), any(Integer.class), 
+        when(orderQuery.listOrders(any(UUID.class), any(Boolean.class), any(Integer.class), 
             any(Integer.class), any())).thenReturn(response);
 
         mockMvc.perform(get("/orders")
@@ -149,7 +153,7 @@ class OrderControllerTest {
             20,
             0
         );
-        when(service.listOrders(any(UUID.class), any(Boolean.class), any(Integer.class), 
+        when(orderQuery.listOrders(any(UUID.class), any(Boolean.class), any(Integer.class), 
             any(Integer.class), eq("pending"))).thenReturn(response);
 
         mockMvc.perform(get("/orders")
@@ -164,7 +168,7 @@ class OrderControllerTest {
     @Test
     @DisplayName("Should handle null authentication in createOrder")
     void testCreateOrder_WithNullAuthentication() throws Exception {
-        when(service.createOrder(any(CreateOrderRequest.class), any(UUID.class))).thenReturn(orderDto);
+        when(orderCreation.createOrder(any(CreateOrderRequest.class), any(UUID.class))).thenReturn(orderDto);
 
         mockMvc.perform(post("/orders")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -178,7 +182,7 @@ class OrderControllerTest {
         Authentication auth = mock(Authentication.class);
         when(auth.getName()).thenReturn(testCustomerId.toString());
         when(auth.getPrincipal()).thenReturn(testCustomerId.toString());
-        when(service.createOrder(any(CreateOrderRequest.class), eq(testCustomerId))).thenReturn(orderDto);
+        when(orderCreation.createOrder(any(CreateOrderRequest.class), eq(testCustomerId))).thenReturn(orderDto);
 
         mockMvc.perform(post("/orders")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -193,7 +197,7 @@ class OrderControllerTest {
         Authentication auth = mock(Authentication.class);
         when(auth.getName()).thenReturn("not-a-uuid");
         when(auth.getPrincipal()).thenReturn("not-a-uuid");
-        when(service.createOrder(any(CreateOrderRequest.class), any(UUID.class))).thenReturn(orderDto);
+        when(orderCreation.createOrder(any(CreateOrderRequest.class), any(UUID.class))).thenReturn(orderDto);
 
         mockMvc.perform(post("/orders")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -219,7 +223,7 @@ class OrderControllerTest {
             20,
             0
         );
-        when(service.listOrders(any(UUID.class), eq(true), any(Integer.class), 
+        when(orderQuery.listOrders(any(UUID.class), eq(true), any(Integer.class), 
             any(Integer.class), any())).thenReturn(response);
 
         mockMvc.perform(get("/orders")
@@ -244,7 +248,7 @@ class OrderControllerTest {
             20,
             0
         );
-        when(service.listOrders(any(UUID.class), eq(true), any(Integer.class), 
+        when(orderQuery.listOrders(any(UUID.class), eq(true), any(Integer.class), 
             any(Integer.class), any())).thenReturn(response);
 
         mockMvc.perform(get("/orders")
@@ -269,7 +273,7 @@ class OrderControllerTest {
             20,
             0
         );
-        when(service.listOrders(any(UUID.class), eq(false), any(Integer.class), 
+        when(orderQuery.listOrders(any(UUID.class), eq(false), any(Integer.class), 
             any(Integer.class), any())).thenReturn(response);
 
         mockMvc.perform(get("/orders")
@@ -282,7 +286,7 @@ class OrderControllerTest {
     void testCreateOrder_WithNullPrincipal() throws Exception {
         Authentication auth = mock(Authentication.class);
         when(auth.getPrincipal()).thenReturn(null);
-        when(service.createOrder(any(CreateOrderRequest.class), any(UUID.class))).thenReturn(orderDto);
+        when(orderCreation.createOrder(any(CreateOrderRequest.class), any(UUID.class))).thenReturn(orderDto);
 
         mockMvc.perform(post("/orders")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -305,7 +309,7 @@ class OrderControllerTest {
             20,
             0
         );
-        when(service.listOrders(any(UUID.class), eq(false), any(Integer.class), 
+        when(orderQuery.listOrders(any(UUID.class), eq(false), any(Integer.class), 
             any(Integer.class), any())).thenReturn(response);
 
         mockMvc.perform(get("/orders")
