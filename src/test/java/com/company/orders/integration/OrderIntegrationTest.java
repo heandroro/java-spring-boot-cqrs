@@ -4,7 +4,7 @@ import com.company.orders.dto.CreateOrderRequest;
 import com.company.orders.dto.OrderDto;
 import com.company.orders.dto.OrderItemDto;
 import com.company.orders.dto.OrderListResponse;
-import com.company.orders.repository.OrderRepository;
+import com.company.orders.command.repository.OrderCommandRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.junit.jupiter.api.BeforeEach;
@@ -47,7 +47,7 @@ class OrderIntegrationTest {
     private RestClient restClient;
 
     @Autowired
-    private OrderRepository repository;
+    private OrderCommandRepository repository;
 
     @BeforeEach
     void setUp() {
