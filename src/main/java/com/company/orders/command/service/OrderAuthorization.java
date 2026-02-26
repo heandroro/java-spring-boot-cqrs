@@ -1,6 +1,6 @@
 package com.company.orders.command.service;
 
-import com.company.orders.entity.Order;
+import com.company.orders.domain.entity.Order;
 import com.company.orders.exception.AuthorizationException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.env.Environment;

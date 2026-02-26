@@ -1,7 +1,7 @@
 package com.company.orders.query.repository;
 
-import com.company.orders.entity.Order;
-import com.company.orders.enums.OrderStatus;
+import com.company.orders.domain.entity.Order;
+import com.company.orders.domain.enums.OrderStatus;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;

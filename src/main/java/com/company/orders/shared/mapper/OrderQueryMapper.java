@@ -1,9 +1,9 @@
 package com.company.orders.shared.mapper;
 
 import com.company.orders.dto.OrderItemDto;
-import com.company.orders.entity.Order;
-import com.company.orders.entity.OrderItem;
-import com.company.orders.enums.OrderStatus;
+import com.company.orders.domain.entity.Order;
+import com.company.orders.domain.entity.OrderItem;
+import com.company.orders.domain.enums.OrderStatus;
 import com.company.orders.query.model.OrderQueryResult;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;

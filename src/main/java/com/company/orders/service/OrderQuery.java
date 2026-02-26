@@ -2,10 +2,10 @@ package com.company.orders.service;
 
 import com.company.orders.dto.OrderDto;
 import com.company.orders.dto.OrderListResponse;
-import com.company.orders.enums.OrderStatus;
+import com.company.orders.domain.enums.OrderStatus;
 import com.company.orders.exception.ResourceNotFoundException;
 import com.company.orders.mapper.OrderMapper;
-import com.company.orders.entity.Order;
+import com.company.orders.domain.entity.Order;
 import com.company.orders.query.repository.OrderQueryRepository;
 import com.company.orders.command.service.OrderAuthorization;
 import lombok.RequiredArgsConstructor;

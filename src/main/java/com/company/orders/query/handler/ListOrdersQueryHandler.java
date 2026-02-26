@@ -1,7 +1,7 @@
 package com.company.orders.query.handler;
 
-import com.company.orders.entity.Order;
-import com.company.orders.enums.OrderStatus;
+import com.company.orders.domain.entity.Order;
+import com.company.orders.domain.enums.OrderStatus;
 import com.company.orders.query.model.ListOrdersQuery;
 import com.company.orders.query.model.OrderListQueryResult;
 import com.company.orders.query.repository.OrderQueryRepository;

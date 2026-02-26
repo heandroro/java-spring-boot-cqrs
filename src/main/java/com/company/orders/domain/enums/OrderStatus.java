@@ -1,4 +1,4 @@
-package com.company.orders.enums;
+package com.company.orders.domain.enums;
 
 import java.util.Arrays;
 

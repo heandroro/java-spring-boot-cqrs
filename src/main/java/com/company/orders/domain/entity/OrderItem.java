@@ -1,4 +1,4 @@
-package com.company.orders.entity;
+package com.company.orders.domain.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

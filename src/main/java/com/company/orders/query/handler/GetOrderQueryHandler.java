@@ -1,7 +1,7 @@
 package com.company.orders.query.handler;
 
 import com.company.orders.command.service.OrderAuthorization;
-import com.company.orders.entity.Order;
+import com.company.orders.domain.entity.Order;
 import com.company.orders.exception.ResourceNotFoundException;
 import com.company.orders.query.model.GetOrderQuery;
 import com.company.orders.query.model.OrderQueryResult;

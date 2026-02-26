@@ -1,4 +1,4 @@
-package com.company.orders.entity;
+package com.company.orders.domain.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import com.company.orders.enums.OrderStatus;
+import com.company.orders.domain.enums.OrderStatus;
 
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
