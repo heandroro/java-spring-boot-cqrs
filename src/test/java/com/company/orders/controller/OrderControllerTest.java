@@ -275,4 +275,40 @@ class OrderControllerTest {
                 .principal(auth))
                 .andExpect(status().isOk());
     }
+
+    @Test
+    @DisplayName("Should handle authentication with null principal")
+    void testCreateOrder_WithNullPrincipal() throws Exception {
+        Authentication auth = mock(Authentication.class);
+        when(auth.getPrincipal()).thenReturn(null);
+        when(service.createOrder(any(CreateOrderRequest.class), any(UUID.class))).thenReturn(orderDto);
+
+        mockMvc.perform(post("/orders")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(createRequest))
+                .principal(auth))
+                .andExpect(status().isCreated());
+    }
+
+    @Test
+    @DisplayName("Should handle invalid UUID with null fallback in listOrders")
+    void testListOrders_WithInvalidUUIDAndNullFallback() throws Exception {
+        Authentication auth = mock(Authentication.class);
+        when(auth.getName()).thenReturn("not-a-uuid");
+        when(auth.getPrincipal()).thenReturn("not-a-uuid");
+        when(auth.getAuthorities()).thenReturn((Collection) Collections.emptyList());
+
+        OrderListResponse response = new OrderListResponse(
+            Arrays.asList(orderDto),
+            1L,
+            20,
+            0
+        );
+        when(service.listOrders(any(UUID.class), eq(false), any(Integer.class), 
+            any(Integer.class), any())).thenReturn(response);
+
+        mockMvc.perform(get("/orders")
+                .principal(auth))
+                .andExpect(status().isOk());
+    }
 }

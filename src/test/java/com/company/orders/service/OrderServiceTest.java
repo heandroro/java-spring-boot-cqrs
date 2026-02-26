@@ -379,4 +379,53 @@ class OrderServiceTest {
         verify(repository).findByStatus(any(), any(Pageable.class));
         verify(repository).count();
     }
+
+    @Test
+    @DisplayName("Should use default limit when limit is null")
+    void testListOrders_WithNullLimit() {
+        Page<Order> page = new PageImpl<>(Arrays.asList(order));
+        when(repository.findByCustomerId(eq(testCustomerId), any(Pageable.class))).thenReturn(page);
+        when(repository.countByCustomerId(testCustomerId)).thenReturn(1L);
+        when(mapper.toDtoList(anyList())).thenReturn(Arrays.asList(orderDto));
+
+        OrderListResponse result = service.listOrders(testCustomerId, false, null, 0, null);
+
+        assertNotNull(result);
+        assertEquals(1, result.getData().size());
+        assertEquals(20, result.getLimit());
+        verify(repository).findByCustomerId(eq(testCustomerId), any(Pageable.class));
+    }
+
+    @Test
+    @DisplayName("Should use default offset when offset is null")
+    void testListOrders_WithNullOffset() {
+        Page<Order> page = new PageImpl<>(Arrays.asList(order));
+        when(repository.findByCustomerId(eq(testCustomerId), any(Pageable.class))).thenReturn(page);
+        when(repository.countByCustomerId(testCustomerId)).thenReturn(1L);
+        when(mapper.toDtoList(anyList())).thenReturn(Arrays.asList(orderDto));
+
+        OrderListResponse result = service.listOrders(testCustomerId, false, 20, null, null);
+
+        assertNotNull(result);
+        assertEquals(1, result.getData().size());
+        assertEquals(0, result.getOffset());
+        verify(repository).findByCustomerId(eq(testCustomerId), any(Pageable.class));
+    }
+
+    @Test
+    @DisplayName("Should use defaults when both limit and offset are null")
+    void testListOrders_WithNullLimitAndOffset() {
+        Page<Order> page = new PageImpl<>(Arrays.asList(order));
+        when(repository.findByCustomerId(eq(testCustomerId), any(Pageable.class))).thenReturn(page);
+        when(repository.countByCustomerId(testCustomerId)).thenReturn(1L);
+        when(mapper.toDtoList(anyList())).thenReturn(Arrays.asList(orderDto));
+
+        OrderListResponse result = service.listOrders(testCustomerId, false, null, null, null);
+
+        assertNotNull(result);
+        assertEquals(1, result.getData().size());
+        assertEquals(20, result.getLimit());
+        assertEquals(0, result.getOffset());
+        verify(repository).findByCustomerId(eq(testCustomerId), any(Pageable.class));
+    }
 }
