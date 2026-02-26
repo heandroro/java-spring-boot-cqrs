@@ -7,6 +7,7 @@ import com.company.orders.exception.ResourceNotFoundException;
 import com.company.orders.mapper.OrderMapper;
 import com.company.orders.entity.Order;
 import com.company.orders.query.repository.OrderQueryRepository;
+import com.company.orders.command.service.OrderAuthorization;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;

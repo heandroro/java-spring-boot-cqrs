@@ -1,8 +1,8 @@
-package com.company.orders.controller;
+package com.company.orders.command.controller;
 
-import com.company.orders.dto.CreateOrderRequest;
-import com.company.orders.dto.OrderDto;
-import com.company.orders.service.OrderCreation;
+import com.company.orders.command.handler.CreateOrderCommandHandler;
+import com.company.orders.command.model.CreateOrderCommand;
+import com.company.orders.command.model.CreateOrderResult;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -23,7 +23,7 @@ import java.util.UUID;
 @Tag(name = "Orders", description = "Order creation operations")
 public class OrderCreationController {
 
-    private final OrderCreation orderCreation;
+    private final CreateOrderCommandHandler handler;
 
     @PostMapping
     @Operation(summary = "Create a new order", security = @SecurityRequirement(name = "bearerAuth"))
@@ -32,13 +32,13 @@ public class OrderCreationController {
         @ApiResponse(responseCode = "400", description = "Invalid request"),
         @ApiResponse(responseCode = "401", description = "Unauthorized")
     })
-    public ResponseEntity<OrderDto> createOrder(
-            @Valid @RequestBody CreateOrderRequest request,
+    public ResponseEntity<CreateOrderResult> createOrder(
+            @Valid @RequestBody CreateOrderCommand command,
             Authentication authentication) {
         
-        UUID customerId = extractCustomerId(authentication, request.customerId());
-        OrderDto created = orderCreation.createOrder(request, customerId);
-        return ResponseEntity.status(HttpStatus.CREATED).body(created);
+        UUID customerId = extractCustomerId(authentication, command.customerId());
+        CreateOrderResult result = handler.handle(command, customerId);
+        return ResponseEntity.status(HttpStatus.CREATED).body(result);
     }
 
     private UUID extractCustomerId(Authentication authentication, UUID fallbackCustomerId) {

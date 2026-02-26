@@ -8,6 +8,8 @@ import com.company.orders.mapper.OrderMapper;
 import com.company.orders.entity.Order;
 import com.company.orders.entity.OrderItem;
 import com.company.orders.command.repository.OrderCommandRepository;
+import com.company.orders.command.service.OrderValidator;
+import com.company.orders.command.service.OrderAuthorization;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;

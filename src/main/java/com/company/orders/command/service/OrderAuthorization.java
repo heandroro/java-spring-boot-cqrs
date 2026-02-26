@@ -1,4 +1,4 @@
-package com.company.orders.service;
+package com.company.orders.command.service;
 
 import com.company.orders.entity.Order;
 import com.company.orders.exception.AuthorizationException;
