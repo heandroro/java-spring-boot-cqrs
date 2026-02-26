@@ -62,24 +62,18 @@ public class Order {
     }
 
     public enum OrderStatus {
-        PENDING("pending"),
-        CONFIRMED("confirmed"),
-        SHIPPED("shipped"),
-        DELIVERED("delivered");
-
-        private final String value;
-
-        OrderStatus(String value) {
-            this.value = value;
-        }
+        PENDING,
+        CONFIRMED,
+        SHIPPED,
+        DELIVERED;
 
         public String getValue() {
-            return value;
+            return name().toLowerCase();
         }
 
         public static OrderStatus fromValue(String value) {
             for (OrderStatus status : values()) {
-                if (status.value.equals(value)) {
+                if (status.getValue().equals(value)) {
                     return status;
                 }
             }
