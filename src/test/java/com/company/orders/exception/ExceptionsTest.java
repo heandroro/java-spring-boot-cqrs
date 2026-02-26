@@ -61,4 +61,40 @@ class ExceptionsTest {
             throw new OrderException("Test");
         });
     }
+
+    @Test
+    @DisplayName("Should create AuthorizationException with message and cause")
+    void createAuthorizationExceptionWithCause() {
+        String message = "Access denied";
+        Throwable cause = new RuntimeException("Root cause");
+        AuthorizationException exception = new AuthorizationException(message, cause);
+        
+        assertEquals(message, exception.getMessage());
+        assertEquals(cause, exception.getCause());
+        assertNotNull(exception);
+    }
+
+    @Test
+    @DisplayName("Should create ResourceNotFoundException with message and cause")
+    void createResourceNotFoundExceptionWithCause() {
+        String message = "Resource not found";
+        Throwable cause = new RuntimeException("Root cause");
+        ResourceNotFoundException exception = new ResourceNotFoundException(message, cause);
+        
+        assertEquals(message, exception.getMessage());
+        assertEquals(cause, exception.getCause());
+        assertNotNull(exception);
+    }
+
+    @Test
+    @DisplayName("Should create OrderException with message and cause")
+    void createOrderExceptionWithCause() {
+        String message = "Invalid order";
+        Throwable cause = new RuntimeException("Root cause");
+        OrderException exception = new OrderException(message, cause);
+        
+        assertEquals(message, exception.getMessage());
+        assertEquals(cause, exception.getCause());
+        assertNotNull(exception);
+    }
 }

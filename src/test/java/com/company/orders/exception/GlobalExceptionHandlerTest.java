@@ -114,4 +114,20 @@ class GlobalExceptionHandlerTest {
         assertEquals(ErrorResponse.ErrorCode.INTERNAL_ERROR, responseEntity.getBody().getCode());
         assertEquals("An unexpected error occurred. Please try again later.", responseEntity.getBody().getMessage());
     }
+
+    @Test
+    @DisplayName("Should handle IllegalArgumentException")
+    void handleIllegalArgumentException() {
+        // Given
+        IllegalArgumentException ex = new IllegalArgumentException("Invalid argument");
+
+        // When
+        ResponseEntity<ErrorResponse> responseEntity = exceptionHandler.handleIllegalArgument(ex, request);
+
+        // Then
+        assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
+        assertNotNull(responseEntity.getBody());
+        assertEquals(ErrorResponse.ErrorCode.VALIDATION_ERROR, responseEntity.getBody().getCode());
+        assertEquals("Invalid argument", responseEntity.getBody().getMessage());
+    }
 }

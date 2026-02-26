@@ -223,19 +223,57 @@
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
                 <version>0.8.14</version>
+                <configuration>
+                    <excludes>
+                        <!-- Exclude MapStruct generated implementations -->
+                        <exclude>**/mapper/*Impl.class</exclude>
+                        <!-- Exclude Spring Boot application main class -->
+                        <exclude>**/OrdersApplication.class</exclude>
+                        <!-- Exclude configuration classes (mostly declarative) -->
+                        <exclude>**/config/OpenApiConfig.class</exclude>
+                        <exclude>**/config/SecurityConfig.class</exclude>
+                        <exclude>**/config/WebConfig.class</exclude>
+                    </excludes>
+                </configuration>
                 <executions>
                     <execution>
                         <goals>
                             <goal>prepare-agent</goal>
                         </goals>
                     </execution>
-                    <!-- Disabled report generation due to Java 25 compatibility -->
                     <execution>
                         <id>report</id>
                         <phase>test</phase>
                         <goals>
                             <goal>report</goal>
                         </goals>
+                    </execution>
+                    <!-- Enforce coverage thresholds -->
+                    <execution>
+                        <id>jacoco-check</id>
+                        <phase>test</phase>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                        <configuration>
+                            <rules>
+                                <rule>
+                                    <element>BUNDLE</element>
+                                    <limits>
+                                        <limit>
+                                            <counter>INSTRUCTION</counter>
+                                            <value>COVEREDRATIO</value>
+                                            <minimum>0.95</minimum>
+                                        </limit>
+                                        <limit>
+                                            <counter>BRANCH</counter>
+                                            <value>COVEREDRATIO</value>
+                                            <minimum>0.90</minimum>
+                                        </limit>
+                                    </limits>
+                                </rule>
+                            </rules>
+                        </configuration>
                     </execution>
                 </executions>
             </plugin>

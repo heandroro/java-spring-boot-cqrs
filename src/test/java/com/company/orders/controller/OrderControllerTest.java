@@ -14,16 +14,22 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.MediaType;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.UUID;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -131,5 +137,142 @@ class OrderControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(invalidRequest)))
                 .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    @DisplayName("Should list orders with status filter")
+    void testListOrders_WithStatusFilter() throws Exception {
+        OrderListResponse response = new OrderListResponse(
+            Arrays.asList(orderDto),
+            1L,
+            20,
+            0
+        );
+        when(service.listOrders(any(UUID.class), any(Boolean.class), any(Integer.class), 
+            any(Integer.class), eq("pending"))).thenReturn(response);
+
+        mockMvc.perform(get("/orders")
+                .param("limit", "20")
+                .param("offset", "0")
+                .param("status", "pending"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.data[0].id").value(testOrderId.toString()))
+                .andExpect(jsonPath("$.totalCount").value(1));
+    }
+
+    @Test
+    @DisplayName("Should handle null authentication in createOrder")
+    void testCreateOrder_WithNullAuthentication() throws Exception {
+        when(service.createOrder(any(CreateOrderRequest.class), any(UUID.class))).thenReturn(orderDto);
+
+        mockMvc.perform(post("/orders")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(createRequest)))
+                .andExpect(status().isCreated());
+    }
+
+    @Test
+    @DisplayName("Should handle authentication with valid UUID principal")
+    void testCreateOrder_WithValidUUIDPrincipal() throws Exception {
+        Authentication auth = mock(Authentication.class);
+        when(auth.getName()).thenReturn(testCustomerId.toString());
+        when(auth.getPrincipal()).thenReturn(testCustomerId.toString());
+        when(service.createOrder(any(CreateOrderRequest.class), eq(testCustomerId))).thenReturn(orderDto);
+
+        mockMvc.perform(post("/orders")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(createRequest))
+                .principal(auth))
+                .andExpect(status().isCreated());
+    }
+
+    @Test
+    @DisplayName("Should handle authentication with invalid UUID principal")
+    void testCreateOrder_WithInvalidUUIDPrincipal() throws Exception {
+        Authentication auth = mock(Authentication.class);
+        when(auth.getName()).thenReturn("not-a-uuid");
+        when(auth.getPrincipal()).thenReturn("not-a-uuid");
+        when(service.createOrder(any(CreateOrderRequest.class), any(UUID.class))).thenReturn(orderDto);
+
+        mockMvc.perform(post("/orders")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(createRequest))
+                .principal(auth))
+                .andExpect(status().isCreated());
+    }
+
+    @Test
+    @DisplayName("Should detect admin role with ROLE_ADMIN")
+    void testListOrders_WithAdminRole() throws Exception {
+        Authentication auth = mock(Authentication.class);
+        when(auth.getName()).thenReturn(testCustomerId.toString());
+        when(auth.getPrincipal()).thenReturn(testCustomerId.toString());
+        Collection<GrantedAuthority> authorities = Collections.singletonList(
+            new SimpleGrantedAuthority("ROLE_ADMIN")
+        );
+        when(auth.getAuthorities()).thenReturn((Collection) authorities);
+
+        OrderListResponse response = new OrderListResponse(
+            Arrays.asList(orderDto),
+            1L,
+            20,
+            0
+        );
+        when(service.listOrders(any(UUID.class), eq(true), any(Integer.class), 
+            any(Integer.class), any())).thenReturn(response);
+
+        mockMvc.perform(get("/orders")
+                .principal(auth))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    @DisplayName("Should detect admin role with lowercase admin")
+    void testListOrders_WithLowercaseAdminRole() throws Exception {
+        Authentication auth = mock(Authentication.class);
+        when(auth.getName()).thenReturn(testCustomerId.toString());
+        when(auth.getPrincipal()).thenReturn(testCustomerId.toString());
+        Collection<GrantedAuthority> authorities = Collections.singletonList(
+            new SimpleGrantedAuthority("admin")
+        );
+        when(auth.getAuthorities()).thenReturn((Collection) authorities);
+
+        OrderListResponse response = new OrderListResponse(
+            Arrays.asList(orderDto),
+            1L,
+            20,
+            0
+        );
+        when(service.listOrders(any(UUID.class), eq(true), any(Integer.class), 
+            any(Integer.class), any())).thenReturn(response);
+
+        mockMvc.perform(get("/orders")
+                .principal(auth))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    @DisplayName("Should not detect admin role with regular user")
+    void testListOrders_WithRegularUser() throws Exception {
+        Authentication auth = mock(Authentication.class);
+        when(auth.getName()).thenReturn(testCustomerId.toString());
+        when(auth.getPrincipal()).thenReturn(testCustomerId.toString());
+        Collection<GrantedAuthority> authorities = Collections.singletonList(
+            new SimpleGrantedAuthority("ROLE_USER")
+        );
+        when(auth.getAuthorities()).thenReturn((Collection) authorities);
+
+        OrderListResponse response = new OrderListResponse(
+            Arrays.asList(orderDto),
+            1L,
+            20,
+            0
+        );
+        when(service.listOrders(any(UUID.class), eq(false), any(Integer.class), 
+            any(Integer.class), any())).thenReturn(response);
+
+        mockMvc.perform(get("/orders")
+                .principal(auth))
+                .andExpect(status().isOk());
     }
 }
