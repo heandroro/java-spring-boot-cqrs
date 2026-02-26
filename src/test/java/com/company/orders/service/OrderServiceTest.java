@@ -4,6 +4,7 @@ import com.company.orders.dto.CreateOrderRequest;
 import com.company.orders.dto.OrderDto;
 import com.company.orders.dto.OrderItemDto;
 import com.company.orders.dto.OrderListResponse;
+import com.company.orders.enums.OrderStatus;
 import com.company.orders.exception.AuthorizationException;
 import com.company.orders.exception.OrderException;
 import com.company.orders.exception.ResourceNotFoundException;
@@ -69,7 +70,7 @@ class OrderServiceTest {
         order = new Order();
         order.setId(testOrderId);
         order.setCustomerId(testCustomerId);
-        order.setStatus(Order.OrderStatus.PENDING);
+        order.setStatus(OrderStatus.PENDING);
         order.setTotal(BigDecimal.valueOf(249.97));
         order.setCreatedAt(OffsetDateTime.now());
 
@@ -324,7 +325,7 @@ class OrderServiceTest {
         Order orderWithZeroTotal = new Order();
         orderWithZeroTotal.setId(testOrderId);
         orderWithZeroTotal.setCustomerId(testCustomerId);
-        orderWithZeroTotal.setStatus(Order.OrderStatus.PENDING);
+        orderWithZeroTotal.setStatus(OrderStatus.PENDING);
         orderWithZeroTotal.setTotal(BigDecimal.ZERO);
 
         when(mapper.toEntity(createRequest)).thenReturn(orderWithZeroTotal);

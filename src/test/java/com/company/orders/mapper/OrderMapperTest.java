@@ -5,6 +5,7 @@ import com.company.orders.dto.OrderDto;
 import com.company.orders.dto.OrderItemDto;
 import com.company.orders.entity.Order;
 import com.company.orders.entity.OrderItem;
+import com.company.orders.enums.OrderStatus;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -39,7 +40,7 @@ class OrderMapperTest {
         order = new Order();
         order.setId(orderId);
         order.setCustomerId(customerId);
-        order.setStatus(Order.OrderStatus.PENDING);
+        order.setStatus(OrderStatus.PENDING);
         order.setTotal(BigDecimal.valueOf(199.98));
         order.setCreatedAt(OffsetDateTime.now());
         order.setUpdatedAt(OffsetDateTime.now());
@@ -98,7 +99,7 @@ class OrderMapperTest {
         Order order2 = new Order();
         order2.setId(UUID.randomUUID());
         order2.setCustomerId(UUID.randomUUID());
-        order2.setStatus(Order.OrderStatus.CONFIRMED);
+        order2.setStatus(OrderStatus.CONFIRMED);
         order2.setTotal(BigDecimal.valueOf(99.99));
         order2.setCreatedAt(OffsetDateTime.now());
 
@@ -117,7 +118,7 @@ class OrderMapperTest {
 
         assertNotNull(entity);
         assertEquals(createRequest.customerId(), entity.getCustomerId());
-        assertEquals(Order.OrderStatus.PENDING, entity.getStatus());
+        assertEquals(OrderStatus.PENDING, entity.getStatus());
         assertNull(entity.getId());
         assertNull(entity.getCreatedAt());
         assertNull(entity.getUpdatedAt());
@@ -140,16 +141,16 @@ class OrderMapperTest {
     @Test
     @DisplayName("Should convert OrderStatus to string")
     void testStatusToString() {
-        String status = mapper.statusToString(Order.OrderStatus.PENDING);
+        String status = mapper.statusToString(OrderStatus.PENDING);
         assertEquals("pending", status);
 
-        status = mapper.statusToString(Order.OrderStatus.CONFIRMED);
+        status = mapper.statusToString(OrderStatus.CONFIRMED);
         assertEquals("confirmed", status);
 
-        status = mapper.statusToString(Order.OrderStatus.SHIPPED);
+        status = mapper.statusToString(OrderStatus.SHIPPED);
         assertEquals("shipped", status);
 
-        status = mapper.statusToString(Order.OrderStatus.DELIVERED);
+        status = mapper.statusToString(OrderStatus.DELIVERED);
         assertEquals("delivered", status);
     }
 

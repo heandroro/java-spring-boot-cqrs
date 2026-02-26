@@ -5,6 +5,7 @@ import com.company.orders.dto.OrderDto;
 import com.company.orders.dto.OrderItemDto;
 import com.company.orders.entity.Order;
 import com.company.orders.entity.OrderItem;
+import com.company.orders.enums.OrderStatus;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;
@@ -40,7 +41,7 @@ public interface OrderMapper {
     OrderItem toItemEntity(OrderItemDto dto);
 
     @Named("statusToString")
-    default String statusToString(Order.OrderStatus status) {
+    default String statusToString(OrderStatus status) {
         return status != null ? status.getValue() : null;
     }
 }

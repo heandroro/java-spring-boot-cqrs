@@ -7,10 +7,11 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import com.company.orders.enums.OrderStatus;
+
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
@@ -60,23 +61,5 @@ public class Order {
         this.total = items.stream()
             .map(OrderItem::getSubtotal)
             .reduce(BigDecimal.ZERO, BigDecimal::add);
-    }
-
-    public enum OrderStatus {
-        PENDING,
-        CONFIRMED,
-        SHIPPED,
-        DELIVERED;
-
-        public String getValue() {
-            return name().toLowerCase();
-        }
-
-        public static OrderStatus fromValue(String value) {
-            return Arrays.stream(values())
-                .filter(status -> status.getValue().equals(value))
-                .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("Invalid status: " + value));
-        }
     }
 }

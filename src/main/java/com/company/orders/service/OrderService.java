@@ -4,6 +4,7 @@ import com.company.orders.dto.CreateOrderRequest;
 import com.company.orders.dto.OrderDto;
 import com.company.orders.dto.OrderItemDto;
 import com.company.orders.dto.OrderListResponse;
+import com.company.orders.enums.OrderStatus;
 import com.company.orders.exception.AuthorizationException;
 import com.company.orders.exception.OrderException;
 import com.company.orders.exception.ResourceNotFoundException;
@@ -107,7 +108,7 @@ public class OrderService {
 
         if (isAdmin) {
             if (status != null) {
-                Order.OrderStatus orderStatus = Order.OrderStatus.fromValue(status);
+                OrderStatus orderStatus = OrderStatus.fromValue(status);
                 page = repository.findByStatus(orderStatus, pageable);
                 totalCount = repository.count();
             } else {
@@ -116,7 +117,7 @@ public class OrderService {
             }
         } else {
             if (status != null) {
-                Order.OrderStatus orderStatus = Order.OrderStatus.fromValue(status);
+                OrderStatus orderStatus = OrderStatus.fromValue(status);
                 page = repository.findByCustomerIdAndStatus(authenticatedCustomerId, orderStatus, pageable);
                 totalCount = repository.countByCustomerIdAndStatus(authenticatedCustomerId, orderStatus);
             } else {

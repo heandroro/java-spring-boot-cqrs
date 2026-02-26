@@ -1,5 +1,6 @@
 package com.company.orders.entity;
 
+import com.company.orders.enums.OrderStatus;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -18,7 +19,7 @@ class OrderTest {
         
         assertNull(order.getId());
         assertNull(order.getCustomerId());
-        assertEquals(Order.OrderStatus.PENDING, order.getStatus());
+        assertEquals(OrderStatus.PENDING, order.getStatus());
         assertEquals(BigDecimal.ZERO, order.getTotal());
         assertNotNull(order.getItems());
         assertTrue(order.getItems().isEmpty());
@@ -35,7 +36,7 @@ class OrderTest {
         Order order = new Order(
             id,
             customerId,
-            Order.OrderStatus.CONFIRMED,
+            OrderStatus.CONFIRMED,
             new BigDecimal("100.00"),
             null,
             null,
@@ -44,7 +45,7 @@ class OrderTest {
         
         assertEquals(id, order.getId());
         assertEquals(customerId, order.getCustomerId());
-        assertEquals(Order.OrderStatus.CONFIRMED, order.getStatus());
+        assertEquals(OrderStatus.CONFIRMED, order.getStatus());
         assertEquals(new BigDecimal("100.00"), order.getTotal());
     }
 
@@ -116,19 +117,19 @@ class OrderTest {
     @Test
     @DisplayName("Should get OrderStatus value")
     void getOrderStatusValue() {
-        assertEquals("pending", Order.OrderStatus.PENDING.getValue());
-        assertEquals("confirmed", Order.OrderStatus.CONFIRMED.getValue());
-        assertEquals("shipped", Order.OrderStatus.SHIPPED.getValue());
-        assertEquals("delivered", Order.OrderStatus.DELIVERED.getValue());
+        assertEquals("pending", OrderStatus.PENDING.getValue());
+        assertEquals("confirmed", OrderStatus.CONFIRMED.getValue());
+        assertEquals("shipped", OrderStatus.SHIPPED.getValue());
+        assertEquals("delivered", OrderStatus.DELIVERED.getValue());
     }
 
     @Test
     @DisplayName("Should get OrderStatus from value")
     void getOrderStatusFromValue() {
-        assertEquals(Order.OrderStatus.PENDING, Order.OrderStatus.fromValue("pending"));
-        assertEquals(Order.OrderStatus.CONFIRMED, Order.OrderStatus.fromValue("confirmed"));
-        assertEquals(Order.OrderStatus.SHIPPED, Order.OrderStatus.fromValue("shipped"));
-        assertEquals(Order.OrderStatus.DELIVERED, Order.OrderStatus.fromValue("delivered"));
+        assertEquals(OrderStatus.PENDING, OrderStatus.fromValue("pending"));
+        assertEquals(OrderStatus.CONFIRMED, OrderStatus.fromValue("confirmed"));
+        assertEquals(OrderStatus.SHIPPED, OrderStatus.fromValue("shipped"));
+        assertEquals(OrderStatus.DELIVERED, OrderStatus.fromValue("delivered"));
     }
 
     @Test
@@ -136,7 +137,7 @@ class OrderTest {
     void getOrderStatusFromInvalidValue() {
         IllegalArgumentException exception = assertThrows(
             IllegalArgumentException.class,
-            () -> Order.OrderStatus.fromValue("invalid")
+            () -> OrderStatus.fromValue("invalid")
         );
         
         assertEquals("Invalid status: invalid", exception.getMessage());
@@ -145,13 +146,13 @@ class OrderTest {
     @Test
     @DisplayName("Should verify all OrderStatus enum values")
     void verifyOrderStatusEnumValues() {
-        Order.OrderStatus[] statuses = Order.OrderStatus.values();
+        OrderStatus[] statuses = OrderStatus.values();
         
         assertEquals(4, statuses.length);
-        assertEquals(Order.OrderStatus.PENDING, Order.OrderStatus.valueOf("PENDING"));
-        assertEquals(Order.OrderStatus.CONFIRMED, Order.OrderStatus.valueOf("CONFIRMED"));
-        assertEquals(Order.OrderStatus.SHIPPED, Order.OrderStatus.valueOf("SHIPPED"));
-        assertEquals(Order.OrderStatus.DELIVERED, Order.OrderStatus.valueOf("DELIVERED"));
+        assertEquals(OrderStatus.PENDING, OrderStatus.valueOf("PENDING"));
+        assertEquals(OrderStatus.CONFIRMED, OrderStatus.valueOf("CONFIRMED"));
+        assertEquals(OrderStatus.SHIPPED, OrderStatus.valueOf("SHIPPED"));
+        assertEquals(OrderStatus.DELIVERED, OrderStatus.valueOf("DELIVERED"));
     }
 
     @Test
@@ -163,12 +164,12 @@ class OrderTest {
         
         order.setId(id);
         order.setCustomerId(customerId);
-        order.setStatus(Order.OrderStatus.SHIPPED);
+        order.setStatus(OrderStatus.SHIPPED);
         order.setTotal(new BigDecimal("200.00"));
         
         assertEquals(id, order.getId());
         assertEquals(customerId, order.getCustomerId());
-        assertEquals(Order.OrderStatus.SHIPPED, order.getStatus());
+        assertEquals(OrderStatus.SHIPPED, order.getStatus());
         assertEquals(new BigDecimal("200.00"), order.getTotal());
     }
 }
