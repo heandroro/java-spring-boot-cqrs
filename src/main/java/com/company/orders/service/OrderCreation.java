@@ -7,7 +7,7 @@ import com.company.orders.exception.OrderException;
 import com.company.orders.mapper.OrderMapper;
 import com.company.orders.entity.Order;
 import com.company.orders.entity.OrderItem;
-import com.company.orders.repository.OrderRepository;
+import com.company.orders.command.repository.OrderCommandRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -20,7 +20,7 @@ import java.util.UUID;
 @Slf4j
 public class OrderCreation {
 
-    private final OrderRepository repository;
+    private final OrderCommandRepository repository;
     private final OrderMapper mapper;
     private final OrderValidator validator;
     private final OrderAuthorization authorization;

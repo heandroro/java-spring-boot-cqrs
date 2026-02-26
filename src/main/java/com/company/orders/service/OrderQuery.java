@@ -6,7 +6,7 @@ import com.company.orders.enums.OrderStatus;
 import com.company.orders.exception.ResourceNotFoundException;
 import com.company.orders.mapper.OrderMapper;
 import com.company.orders.entity.Order;
-import com.company.orders.repository.OrderRepository;
+import com.company.orders.query.repository.OrderQueryRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -23,7 +23,7 @@ import java.util.UUID;
 @Slf4j
 public class OrderQuery {
 
-    private final OrderRepository repository;
+    private final OrderQueryRepository repository;
     private final OrderMapper mapper;
     private final OrderAuthorization authorization;
 
