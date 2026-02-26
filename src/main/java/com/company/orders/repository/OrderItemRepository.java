@@ -1,6 +1,6 @@
 package com.company.orders.repository;
 
-import com.company.orders.model.OrderItem;
+import com.company.orders.entity.OrderItem;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

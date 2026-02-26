@@ -1,4 +1,4 @@
-package com.company.orders.model;
+package com.company.orders.entity;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
