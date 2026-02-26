@@ -3,7 +3,7 @@ package com.company.orders.service;
 import com.company.orders.dto.OrderDto;
 import com.company.orders.dto.OrderListResponse;
 import com.company.orders.domain.enums.OrderStatus;
-import com.company.orders.exception.ResourceNotFoundException;
+import com.company.orders.shared.exception.ResourceNotFoundException;
 import com.company.orders.mapper.OrderMapper;
 import com.company.orders.domain.entity.Order;
 import com.company.orders.query.repository.OrderQueryRepository;

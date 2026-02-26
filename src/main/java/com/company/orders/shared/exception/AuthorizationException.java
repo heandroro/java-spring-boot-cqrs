@@ -1,4 +1,4 @@
-package com.company.orders.exception;
+package com.company.orders.shared.exception;
 
 public class AuthorizationException extends RuntimeException {
 

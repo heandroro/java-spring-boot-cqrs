@@ -1,4 +1,4 @@
-package com.company.orders.util;
+package com.company.orders.shared.util;
 
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;

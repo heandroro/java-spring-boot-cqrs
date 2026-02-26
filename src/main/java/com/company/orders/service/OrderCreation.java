@@ -3,7 +3,7 @@ package com.company.orders.service;
 import com.company.orders.dto.CreateOrderRequest;
 import com.company.orders.dto.OrderDto;
 import com.company.orders.dto.OrderItemDto;
-import com.company.orders.exception.OrderException;
+import com.company.orders.shared.exception.OrderException;
 import com.company.orders.mapper.OrderMapper;
 import com.company.orders.domain.entity.Order;
 import com.company.orders.domain.entity.OrderItem;

@@ -1,4 +1,4 @@
-package com.company.orders.exception;
+package com.company.orders.shared.exception;
 
 import com.company.orders.dto.ErrorResponse;
 import jakarta.servlet.http.HttpServletRequest;

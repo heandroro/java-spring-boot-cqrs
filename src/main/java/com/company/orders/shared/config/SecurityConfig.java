@@ -1,4 +1,4 @@
-package com.company.orders.config;
+package com.company.orders.shared.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

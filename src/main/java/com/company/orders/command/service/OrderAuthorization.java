@@ -1,7 +1,7 @@
 package com.company.orders.command.service;
 
 import com.company.orders.domain.entity.Order;
-import com.company.orders.exception.AuthorizationException;
+import com.company.orders.shared.exception.AuthorizationException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;

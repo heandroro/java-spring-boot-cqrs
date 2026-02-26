@@ -8,7 +8,7 @@ import com.company.orders.command.service.OrderValidator;
 import com.company.orders.dto.OrderItemDto;
 import com.company.orders.domain.entity.Order;
 import com.company.orders.domain.entity.OrderItem;
-import com.company.orders.exception.OrderException;
+import com.company.orders.shared.exception.OrderException;
 import com.company.orders.shared.mapper.OrderCommandMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
