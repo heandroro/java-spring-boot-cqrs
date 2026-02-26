@@ -23,23 +23,11 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/orders")
 @RequiredArgsConstructor
-@Tag(name = "Orders", description = "Order management operations")
 public class OrderController implements OrderControllerApi {
 
     private final OrderService service;
 
-    @PostMapping
-    @Operation(
-        summary = "Criar novo pedido",
-        description = "Cria um novo pedido no sistema. Requer JWT token com escopo orders:write",
-        security = @SecurityRequirement(name = "BearerAuth", scopes = {"orders:write"})
-    )
-    @ApiResponses(value = {
-        @ApiResponse(responseCode = "201", description = "Pedido criado com sucesso"),
-        @ApiResponse(responseCode = "400", description = "Validação falhou"),
-        @ApiResponse(responseCode = "401", description = "Não autenticado"),
-        @ApiResponse(responseCode = "403", description = "Não autorizado")
-    })
+    @Override
     public ResponseEntity<OrderDto> createOrder(
             @Valid @RequestBody CreateOrderRequest request,
             Authentication authentication) {
@@ -49,27 +37,11 @@ public class OrderController implements OrderControllerApi {
         return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }
 
-    @GetMapping
-    @Operation(
-        summary = "Listar pedidos do usuário",
-        description = "Lista pedidos do usuário autenticado com suporte a paginação e filtro",
-        security = @SecurityRequirement(name = "BearerAuth", scopes = {"orders:read"})
-    )
-    @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "Lista de pedidos"),
-        @ApiResponse(responseCode = "400", description = "Parâmetro inválido"),
-        @ApiResponse(responseCode = "401", description = "Não autenticado")
-    })
+    @Override
     public ResponseEntity<OrderListResponse> listOrders(
-            @Parameter(description = "Quantidade de resultados (máximo 100)")
             @RequestParam(required = false, defaultValue = "20") Integer limit,
-            
-            @Parameter(description = "Offset para paginação (0-indexed)")
             @RequestParam(required = false, defaultValue = "0") Integer offset,
-            
-            @Parameter(description = "Filtrar por status do pedido")
             @RequestParam(required = false) String status,
-            
             Authentication authentication) {
         
         UUID customerId = extractCustomerId(authentication);
@@ -79,20 +51,9 @@ public class OrderController implements OrderControllerApi {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/{orderId}")
-    @Operation(
-        summary = "Obter detalhes do pedido",
-        description = "Retorna informações completas de um pedido. User comum só pode acessar seus próprios pedidos",
-        security = @SecurityRequirement(name = "BearerAuth", scopes = {"orders:read"})
-    )
-    @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "Detalhes do pedido"),
-        @ApiResponse(responseCode = "401", description = "Não autenticado"),
-        @ApiResponse(responseCode = "403", description = "Acesso negado"),
-        @ApiResponse(responseCode = "404", description = "Pedido não encontrado")
-    })
+    @Override
     public ResponseEntity<OrderDto> getOrder(
-            @Parameter(description = "UUID do pedido") @PathVariable UUID orderId,
+            @PathVariable UUID orderId,
             Authentication authentication) {
         
         UUID customerId = extractCustomerId(authentication);
