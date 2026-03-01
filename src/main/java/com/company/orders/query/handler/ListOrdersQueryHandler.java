@@ -23,7 +23,7 @@ public class ListOrdersQueryHandler {
     private final OrderQueryRepository repository;
     private final OrderQueryMapper mapper;
 
-    @Transactional(readOnly = true)
+    @Transactional(transactionManager = "queryTransactionManager", readOnly = true)
     public OrderListQueryResult handle(ListOrdersQuery query) {
         log.info("Listing orders for customer: {}, limit: {}, offset: {}, status: {}", 
             query.authenticatedCustomerId(), query.limit(), query.offset(), query.status());

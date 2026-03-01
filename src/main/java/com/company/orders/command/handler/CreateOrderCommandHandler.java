@@ -27,7 +27,7 @@ public class CreateOrderCommandHandler {
     private final OrderValidator validator;
     private final OrderAuthorization authorization;
 
-    @Transactional
+    @Transactional(transactionManager = "commandTransactionManager")
     public CreateOrderResult handle(CreateOrderCommand command, UUID authenticatedCustomerId) {
         log.info("Creating new order for customer: {}", command.customerId());
         

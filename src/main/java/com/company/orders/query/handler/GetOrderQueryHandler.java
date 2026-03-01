@@ -21,7 +21,7 @@ public class GetOrderQueryHandler {
     private final OrderQueryMapper mapper;
     private final OrderAuthorization authorization;
 
-    @Transactional(readOnly = true)
+    @Transactional(transactionManager = "queryTransactionManager", readOnly = true)
     public OrderQueryResult handle(GetOrderQuery query) {
         log.info("Fetching order with id: {}", query.orderId());
         

@@ -3,16 +3,29 @@ spring:
     name: orders-service
 
   datasource:
-    url: jdbc:postgresql://localhost:5432/orders_db
-    username: postgres
-    password: postgres
-    driver-class-name: org.postgresql.Driver
-    hikari:
-      maximum-pool-size: 10
-      minimum-idle: 5
-      connection-timeout: 30000
-      idle-timeout: 600000
-      max-lifetime: 1800000
+    command:
+      jdbc-url: jdbc:postgresql://localhost:5432/orders_db
+      username: postgres
+      password: postgres
+      driver-class-name: org.postgresql.Driver
+      hikari:
+        maximum-pool-size: 10
+        minimum-idle: 5
+        connection-timeout: 30000
+        idle-timeout: 600000
+        max-lifetime: 1800000
+    query:
+      jdbc-url: jdbc:postgresql://localhost:5433/orders_db
+      username: postgres
+      password: postgres
+      driver-class-name: org.postgresql.Driver
+      hikari:
+        maximum-pool-size: 20
+        minimum-idle: 10
+        connection-timeout: 30000
+        idle-timeout: 600000
+        max-lifetime: 1800000
+        read-only: true
 
   jpa:
     hibernate:

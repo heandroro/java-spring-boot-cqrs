@@ -440,33 +440,53 @@ Authorization: Bearer <token>
 
 ## 🏗️ Arquitetura
 
-### CQRS Overview
+### CQRS Overview com Read Replicas
 
 ```
-HTTP Request → POST /orders → Command Side
-                    ↓
-          GET /orders → Query Side → GET /orders/{id}
-                    ↓
-                    ↓
-          OrderCreationController → OrderQueryController
-                    ↓                        ↓
-          CreateOrderCommandHandler → GetOrderQueryHandler
-                    ↓                        ↓
-          OrderCommandRepository → OrderQueryRepository
-                    ↓                        ↓
-          PostgreSQL (Write) → PostgreSQL (Read)
+┌─────────────────────────────────────┐    ┌─────────────────────────────────────┐
+│        Command Side (Write)         │    │        Query Side (Read)          │
+├─────────────────────────────────────┤    ├─────────────────────────────────────┤
+│  POST /orders                       │    │  GET /orders                      │
+│  ↓                                  │    │  GET /orders/{id}                 │
+│  OrderCreationController            │    │  ↓                                │
+│  ↓                                  │    │  OrderQueryController             │
+│  CreateOrderCommandHandler          │    │  ↓                                │
+│  ↓                                  │    │  GetOrderQueryHandler            │
+│  OrderCommandRepository             │    │  ListOrdersQueryHandler           │
+│  ↓                                  │    │  ↓                                │
+│  PostgreSQL Primary (R/W)           │◄───┤  PostgreSQL Replica (R/O)        │
+│  Port: 5432                         │    │  Port: 5433                       │
+└─────────────────────────────────────┘    └─────────────────────────────────────┘
+                                       ▲
+                                       │
+                                Streaming Replication
 ```
 
-**Fluxo CQRS Simplificado:**
+**Arquitetura CQRS com Separação Física de Bases:**
 
 1. **Command Side (Write Operations)**:
    - `POST /orders` → `OrderCreationController` → `CreateOrderCommandHandler` → `OrderCommandRepository`
+   - Conecta ao **PostgreSQL Primary** (porta 5432) com acesso Read/Write
+   - Transaction Manager: `commandTransactionManager`
 
 2. **Query Side (Read Operations)**:
    - `GET /orders` → `OrderQueryController` → `GetOrderQueryHandler` → `OrderQueryRepository`
    - `GET /orders/{id}` → `OrderQueryController` → `ListOrdersQueryHandler` → `OrderQueryRepository`
+   - Conecta ao **PostgreSQL Replica** (porta 5433) com acesso Read-Only
+   - Transaction Manager: `queryTransactionManager`
 
-3. **Separação de Responsabilidades**: Commands modificam estado, Queries leem estado
+3. **Replicação**:
+   - Streaming Replication assíncrona do Primary para Replica
+   - Eventual Consistency (delay típico < 1s)
+   - Réplica pode ser promovida a Primary em caso de failover
+
+4. **Benefícios**:
+   - ✅ Performance: Queries não impactam writes
+   - ✅ Escalabilidade: Adicionar réplicas conforme demanda
+   - ✅ Disponibilidade: Failover automático
+   - ✅ Segurança: Query side read-only
+
+📚 **Documentação Completa**: Ver [CQRS-READ-REPLICAS.md](docs/CQRS-READ-REPLICAS.md)
 
 ### CQRS Architecture Diagram
 

@@ -1,9 +1,9 @@
 version: '3.8'
 
 services:
-  postgres:
+  postgres-primary:
     image: postgres:16-alpine
-    container_name: orders-service-db
+    container_name: orders-db-primary
     environment:
       POSTGRES_DB: orders_db
       POSTGRES_USER: postgres
@@ -11,7 +11,12 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - postgres_primary_data:/var/lib/postgresql/data
+      - ./docker/postgres-primary/postgresql.conf:/etc/postgresql/postgresql.conf
+      - ./docker/postgres-primary/pg_hba.conf:/etc/postgresql/pg_hba.conf
+      - ./docker/init-scripts:/docker-entrypoint-initdb.d
+      - postgres_archive:/var/lib/postgresql/archive
+    command: ["postgres", "-c", "config_file=/etc/postgresql/postgresql.conf"]
     networks:
       - orders-network
     healthcheck:
@@ -20,25 +25,70 @@ services:
       timeout: 5s
       retries: 5
 
+  postgres-replica:
+    image: postgres:16-alpine
+    container_name: orders-db-replica
+    environment:
+      POSTGRES_DB: orders_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      PGPASSWORD: replicator_password
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_replica_data:/var/lib/postgresql/data
+      - ./docker/postgres-replica/postgresql.conf:/etc/postgresql/postgresql.conf
+    depends_on:
+      postgres-primary:
+        condition: service_healthy
+    networks:
+      - orders-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    entrypoint: |
+      bash -c "
+      if [ ! -s /var/lib/postgresql/data/PG_VERSION ]; then
+        echo 'Initializing replica from primary...'
+        until PGPASSWORD=replicator_password pg_basebackup -h postgres-primary -D /var/lib/postgresql/data -U replicator -v -P -W -R; do
+          echo 'Waiting for primary to be ready...'
+          sleep 5
+        done
+        echo 'Replica initialized successfully'
+      fi
+      postgres -c config_file=/etc/postgresql/postgresql.conf
+      "
+
   app:
     build:
       context: .
       dockerfile: Dockerfile
     container_name: orders-service-app
     environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/orders_db
-      SPRING_DATASOURCE_USERNAME: postgres
-      SPRING_DATASOURCE_PASSWORD: postgres
+      SPRING_DATASOURCE_COMMAND_JDBC_URL: jdbc:postgresql://postgres-primary:5432/orders_db
+      SPRING_DATASOURCE_COMMAND_USERNAME: postgres
+      SPRING_DATASOURCE_COMMAND_PASSWORD: postgres
+      SPRING_DATASOURCE_QUERY_JDBC_URL: jdbc:postgresql://postgres-replica:5432/orders_db
+      SPRING_DATASOURCE_QUERY_USERNAME: postgres
+      SPRING_DATASOURCE_QUERY_PASSWORD: postgres
     ports:
       - "8080:8080"
     depends_on:
-      postgres:
+      postgres-primary:
+        condition: service_healthy
+      postgres-replica:
         condition: service_healthy
     networks:
       - orders-network
 
 volumes:
-  postgres_data:
+  postgres_primary_data:
+    driver: local
+  postgres_replica_data:
+    driver: local
+  postgres_archive:
     driver: local
 
 networks:

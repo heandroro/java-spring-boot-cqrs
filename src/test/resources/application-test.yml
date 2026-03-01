@@ -1,0 +1,29 @@
+spring:
+  datasource:
+    command:
+      jdbc-url: jdbc:h2:mem:testdb_command;MODE=PostgreSQL;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+      username: sa
+      password: 
+      driver-class-name: org.h2.Driver
+    query:
+      jdbc-url: jdbc:h2:mem:testdb_query;MODE=PostgreSQL;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+      username: sa
+      password: 
+      driver-class-name: org.h2.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.H2Dialect
+        format_sql: true
+
+  flyway:
+    enabled: false
+
+logging:
+  level:
+    root: INFO
+    com.company.orders: DEBUG
