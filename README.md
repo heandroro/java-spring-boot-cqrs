@@ -755,16 +755,27 @@ mindmap
 
 ## 🐳 Docker
 
-### Rodar apenas PostgreSQL
+### Rodar PostgreSQL Primary e Replica
 
 ```bash
-docker-compose up -d postgres
+# Iniciar Primary e Replica com replicação
+docker-compose up -d postgres-primary postgres-replica
+
+# Verificar status da replicação
+docker exec -it orders-db-primary psql -U postgres -c "SELECT * FROM pg_stat_replication;"
+
+# Verificar lag de replicação
+docker exec -it orders-db-replica psql -U postgres -c "SELECT now() - pg_last_xact_replay_timestamp() AS replication_lag;"
 ```
 
 ### Rodar aplicação completa
 
 ```bash
+# Iniciar toda a infraestrutura (Primary, Replica e App)
 docker-compose up --build
+
+# Ou apenas a aplicação (se DBs já estiverem rodando)
+docker-compose up -d app
 ```
 
 ### Parar serviços
@@ -776,7 +787,24 @@ docker-compose down
 ### Limpar volumes
 
 ```bash
+# ATENÇÃO: Isso apagará todos os dados!
 docker-compose down -v
+```
+
+### Troubleshooting
+
+```bash
+# Ver logs do Primary
+docker logs orders-db-primary
+
+# Ver logs da Replica
+docker logs orders-db-replica
+
+# Ver logs da aplicação
+docker logs orders-service-app
+
+# Reiniciar apenas a Replica
+docker-compose restart postgres-replica
 ```
 
 ---
@@ -916,10 +944,13 @@ Apache 2.0 - veja LICENSE para detalhes.
 
 ---
 
-**Versão**: 1.1.0  
+**Versão**: 2.0.0  
 **Última Atualização**: 2026-03-01  
-**Stack**: Java 25 + Spring Boot 4 + JUnit 6 + CQRS  
+**Stack**: Java 25 + Spring Boot 4 + JUnit 6 + CQRS + PostgreSQL Replication  
 **OpenAPI**: 3.1.0  
 **Cobertura**: 99% instruções + 95% branches  
-**Arquitetura**: CQRS (Command Query Responsibility Segregation)  
-**Autor**: SDD Documentation Team
+**Arquitetura**: CQRS com Read Replicas (Command Query Responsibility Segregation)  
+**Database**: PostgreSQL Primary (5432) + Replica (5433) com Streaming Replication  
+**Autor**: SDD Documentation Team  
+
+📚 **Documentação CQRS Avançada**: Ver [CQRS-READ-REPLICAS.md](docs/CQRS-READ-REPLICAS.md)
