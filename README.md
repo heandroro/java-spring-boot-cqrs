@@ -442,24 +442,46 @@ Authorization: Bearer <token>
 
 ### CQRS Overview com Read Replicas
 
-```
-┌─────────────────────────────────────┐    ┌─────────────────────────────────────┐
-│        Command Side (Write)         │    │        Query Side (Read)          │
-├─────────────────────────────────────┤    ├─────────────────────────────────────┤
-│  POST /orders                       │    │  GET /orders                      │
-│  ↓                                  │    │  GET /orders/{id}                 │
-│  OrderCreationController            │    │  ↓                                │
-│  ↓                                  │    │  OrderQueryController             │
-│  CreateOrderCommandHandler          │    │  ↓                                │
-│  ↓                                  │    │  GetOrderQueryHandler            │
-│  OrderCommandRepository             │    │  ListOrdersQueryHandler           │
-│  ↓                                  │    │  ↓                                │
-│  PostgreSQL Primary (R/W)           │◄───┤  PostgreSQL Replica (R/O)        │
-│  Port: 5432                         │    │  Port: 5433                       │
-└─────────────────────────────────────┘    └─────────────────────────────────────┘
-                                       ▲
-                                       │
-                                Streaming Replication
+```mermaid
+flowchart LR
+    subgraph "Command Side - Write"
+        POST[POST /orders]
+        OCC[OrderCreationController]
+        OCH[CreateOrderCommandHandler]
+        OCR[OrderCommandRepository]
+        DBP[(PostgreSQL Primary<br/>Port: 5432<br/>R/W)]
+        
+        POST --> OCC --> OCH --> OCR --> DBP
+    end
+    
+    subgraph "Query Side - Read"
+        GET1[GET /orders]
+        GET2[GET /orders/:id]
+        OQC[OrderQueryController]
+        GQH[GetOrderQueryHandler]
+        LQH[ListOrdersQueryHandler]
+        OQR[OrderQueryRepository]
+        DBR[(PostgreSQL Replica<br/>Port: 5433<br/>R/O)]
+        
+        GET1 --> OQC
+        GET2 --> OQC
+        OQC --> GQH --> OQR
+        OQC --> LQH --> OQR
+        OQR --> DBR
+    end
+    
+    DBP -.->|Streaming<br/>Replication| DBR
+    
+    style DBP fill:#e8f5e8,stroke:#4caf50,stroke-width:3px
+    style DBR fill:#fff3e0,stroke:#ff9800,stroke-width:3px
+    style POST fill:#e1f5fe
+    style OCC fill:#e1f5fe
+    style OCH fill:#e1f5fe
+    style GET1 fill:#f3e5f5
+    style GET2 fill:#f3e5f5
+    style OQC fill:#f3e5f5
+    style GQH fill:#f3e5f5
+    style LQH fill:#f3e5f5
 ```
 
 **Arquitetura CQRS com Separação Física de Bases:**
@@ -549,8 +571,11 @@ flowchart TD
     CC -.-> GEH
     QC -.-> GEH
 
-    subgraph "Database"
+    subgraph "Database - Write"
         DBP[(PostgreSQL Primary)]
+    end
+
+    subgraph "Database - Read"
         DBR[(PostgreSQL Replica)]
     end
 
