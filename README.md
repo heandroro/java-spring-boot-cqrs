@@ -523,17 +523,11 @@ flowchart TD
         QA[OrderAuthorization]
     end
 
-    subgraph "Database"
-        DBP[(PostgreSQL Primary)]
-        DBR[(PostgreSQL Replica)]
-    end
-
     CC --> CH
     CH --> CR
     CH --> CM
     CH --> CV
     CH --> CA
-    CR --> DBP
 
     QC --> QH1
     QC --> QH2
@@ -543,7 +537,6 @@ flowchart TD
     QH2 --> QM
     QH1 --> QA
     QH2 --> QA
-    QR --> DBR
 
     CH --> O
     QH1 --> O
@@ -556,6 +549,13 @@ flowchart TD
     CC -.-> GEH
     QC -.-> GEH
 
+    subgraph "Database"
+        DBP[(PostgreSQL Primary)]
+        DBR[(PostgreSQL Replica)]
+    end
+
+    CR --> DBP
+    QR --> DBR
     DBP -.-> DBR
 
     style CC fill:#e1f5fe
