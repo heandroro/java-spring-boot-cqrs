@@ -514,12 +514,13 @@ flowchart LR
 
 ```mermaid
 flowchart TD
+    subgraph "Domain Layer (Shared)"
+        O[Order Entity]
+        OI[OrderItem Entity]
+        OS[OrderStatus Enum]
+    end
+
     subgraph "Shared Components"
-        subgraph "Domain Layer"
-            O[Order Entity]
-            OI[OrderItem Entity]
-            OS[OrderStatus Enum]
-        end
         SC[SecurityConfig]
         OC[OpenApiConfig]
         WC[WebConfig]
@@ -652,60 +653,114 @@ sequenceDiagram
 
 ### Package Structure
 
+#### Macro View - High Level Packages
+
 ```mermaid
-graph LR
-    subgraph command
-        CC[controller]
-        CH[handler]
-        CR[repository]
-        CM[model]
-        CS[service]
+flowchart TD
+    subgraph "com.company.orders"
+        CMD[command<br/>Write Operations]
+        QRY[query<br/>Read Operations]
+        DOM[domain<br/>Business Entities]
+        SHR[shared<br/>Common Components]
     end
+    
+    CMD --> DOM
+    QRY --> DOM
+    CMD --> SHR
+    QRY --> SHR
+    
+    style CMD fill:#e1f5fe,stroke:#01579b,stroke-width:2px
+    style QRY fill:#f3e5f5,stroke:#4a148c,stroke-width:2px
+    style DOM fill:#fff9c4,stroke:#f57f17,stroke-width:2px
+    style SHR fill:#e0f2f1,stroke:#004d40,stroke-width:2px
+```
 
-    subgraph query
-        QC[controller]
-        QH[handler]
-        QR[repository]
-        QM[model]
-        QS[service]
+#### Command Side - Detailed Structure
+
+```mermaid
+flowchart LR
+    subgraph "command"
+        direction TB
+        CTRL[controller<br/>OrderCreationController]
+        HAND[handler<br/>CreateOrderCommandHandler]
+        REPO[repository<br/>OrderCommandRepository]
+        MODL[model<br/>CreateOrderCommand<br/>CreateOrderResult]
+        SERV[service<br/>OrderValidator<br/>OrderAuthorization]
     end
+    
+    CTRL --> HAND
+    HAND --> REPO
+    HAND --> MODL
+    HAND --> SERV
+    
+    style CTRL fill:#e1f5fe
+    style HAND fill:#e1f5fe
+    style REPO fill:#e1f5fe
+    style MODL fill:#e1f5fe
+    style SERV fill:#e1f5fe
+```
 
-    subgraph domain
-        DE[entity]
-        DEN[enums]
+#### Query Side - Detailed Structure
+
+```mermaid
+flowchart LR
+    subgraph "query"
+        direction TB
+        QCTRL[controller<br/>OrderQueryController]
+        QHAND1[handler<br/>GetOrderQueryHandler]
+        QHAND2[handler<br/>ListOrdersQueryHandler]
+        QREPO[repository<br/>OrderQueryRepository]
+        QMODL[model<br/>GetOrderQuery<br/>ListOrdersQuery<br/>OrderQueryResult]
     end
+    
+    QCTRL --> QHAND1
+    QCTRL --> QHAND2
+    QHAND1 --> QREPO
+    QHAND2 --> QREPO
+    QHAND1 --> QMODL
+    QHAND2 --> QMODL
+    
+    style QCTRL fill:#f3e5f5
+    style QHAND1 fill:#f3e5f5
+    style QHAND2 fill:#f3e5f5
+    style QREPO fill:#f3e5f5
+    style QMODL fill:#f3e5f5
+```
 
-    subgraph shared
-        SC[config]
-        SM[mapper]
-        SS[model]
-        SE[exception]
-        SU[util]
+#### Domain Layer - Detailed Structure
+
+```mermaid
+flowchart TD
+    subgraph "domain"
+        direction LR
+        ENT[entity<br/>Order<br/>OrderItem]
+        ENUM[enums<br/>OrderStatus]
     end
+    
+    ENT --> ENUM
+    
+    style ENT fill:#fff9c4
+    style ENUM fill:#fff9c4
+```
 
-    CC --> CH
-    CH --> CR
-    CH --> CM
-    CH --> CS
+#### Shared Components - Detailed Structure
 
-    QC --> QH
-    QH --> QR
-    QH --> QM
-    QH --> QS
-
-    CH --> DE
-    QH --> DE
-
-    CC --> SC
-    QC --> SC
-    CH --> SM
-    QH --> SM
-    CH --> SS
-    QH --> SS
-    CH --> SE
-    QH --> SE
-    CH --> SU
-    QH --> SU
+```mermaid
+flowchart TD
+    subgraph "shared"
+        direction TB
+        CONF[config<br/>CommandDataSourceConfig<br/>QueryDataSourceConfig<br/>SecurityConfig]
+        MAPP[mapper<br/>OrderCommandMapper<br/>OrderQueryMapper]
+        SMOD[model<br/>OrderItemDto]
+        EXCP[exception<br/>OrderException<br/>ResourceNotFoundException]
+        MNTR[monitoring<br/>DatabaseMetrics]
+    end
+    
+    style CONF fill:#e0f2f1
+    style MAPP fill:#e0f2f1
+    style SMOD fill:#e0f2f1
+    style EXCP fill:#e0f2f1
+    style MNTR fill:#e0f2f1
 ```
 
 ### Test Coverage Overview
