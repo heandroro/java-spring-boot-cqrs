@@ -442,29 +442,27 @@ Authorization: Bearer <token>
 
 ### CQRS Overview
 
+```mermaid
+graph TD
+    A[HTTP Request] --> B{Operation Type}
+
+    B -->|POST /orders| C[Command Side]
+    C --> C1[OrderCreationController]
+    C1 --> C2[CreateOrderCommandHandler]
+    C2 --> C3[OrderCommandRepository]
+    C3 --> C4[(PostgreSQL Write)]
+
+    B -->|GET /orders| D[Query Side]
+    B -->|GET /orders/{id}| D
+
+    D --> D1[OrderQueryController]
+    D1 --> D2{Query Type}
+    D2 -->|Get Order| D3[GetOrderQueryHandler]
+    D2 -->|List Orders| D4[ListOrdersQueryHandler]
+    D3 --> D5[OrderQueryRepository]
+    D4 --> D5
+    D5 --> D6[(PostgreSQL Read)]
 ```
-HTTP Request → Operation Type → POST /orders → Command Side → OrderCreationController
-                    ↓                      ↓                   ↓
-             GET /orders → Query Side → OrderQueryController → GetOrderQueryHandler
-                    ↓                                         ↓
-          GET /orders/{id}                               ListOrdersQueryHandler
-                                                                 ↓
-                                                          OrderQueryRepository → PostgreSQL (Read)
-                                               ↓
-                                        OrderCommandRepository → PostgreSQL (Write)
-```
-
-**Fluxo CQRS Simplificado:**
-
-1. **Command Side (Write)**: `POST /orders`
-   - OrderCreationController → CreateOrderCommandHandler → OrderCommandRepository
-   - Foco: Validação, Autorização, Persistência
-
-2. **Query Side (Read)**: `GET /orders`, `GET /orders/{id}`
-   - OrderQueryController → GetOrderQueryHandler/ListOrdersQueryHandler → OrderQueryRepository
-   - Foco: Busca otimizada, Filtros, Paginação
-
-3. **Separação de Responsabilidades**: Commands modificam estado, Queries leem estado
 
 ### CQRS Architecture Diagram
 
