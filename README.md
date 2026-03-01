@@ -577,7 +577,7 @@ sequenceDiagram
     participant OCC as OrderCreationController
     participant OCH as CreateOrderCommandHandler
     participant OCR as OrderCommandRepository
-    participant DB as PostgreSQL
+    participant DBP as PostgreSQL Primary
 
     Client->>OCC: POST /orders
     OCC->>OCC: extractCustomerId()
@@ -592,7 +592,7 @@ sequenceDiagram
     OCH->>OCH: order.calculateTotal()
     OCH->>OCH: validateOrderTotal()
     OCH->>OCR: save(order)
-    OCR->>DB: INSERT order + items
+    OCR->>DBP: INSERT order + items
     OCH->>OCH: mapper.toResult(savedOrder)
     OCH-->>OCC: CreateOrderResult
     OCC-->>Client: 201 Created
@@ -606,7 +606,7 @@ sequenceDiagram
     participant OQC as OrderQueryController
     participant LQH as ListOrdersQueryHandler
     participant OQR as OrderQueryRepository
-    participant DB as PostgreSQL
+    participant DBR as PostgreSQL Replica
 
     Client->>OQC: GET /orders?limit=20&offset=0
     OQC->>OQC: extractCustomerId()
@@ -614,13 +614,13 @@ sequenceDiagram
     OQC->>LQH: handle(query)
     LQH->>LQH: apply filters (admin/customer + status)
     LQH->>OQR: findBy...() with pagination
-    OQR->>DB: SELECT with conditions
-    DB-->>OQR: ResultSet
+    OQR->>DBR: SELECT with conditions
+    DBR-->>OQR: ResultSet
     OQR-->>LQH: Page<Order>
     LQH->>LQH: mapper.toQueryResults(orders)
     LQH->>OQR: count total
-    OQR->>DB: COUNT query
-    DB-->>OQR: totalCount
+    OQR->>DBR: COUNT query
+    DBR-->>OQR: totalCount
     LQH-->>OQC: OrderListQueryResult
     OQC-->>Client: 200 OK
 ```
