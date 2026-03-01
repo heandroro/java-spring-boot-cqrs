@@ -822,13 +822,67 @@ O serviço inclui tabela `audit_logs` para rastreamento de operações:
 
 ---
 
-## 🤝 Contribuindo
+## � Mermaid Diagram Validation
 
-1. Fork o projeto
-2. Crie uma branch (`git checkout -b feature/improvement`)
-3. Commit suas mudanças (`git commit -am 'Add improvement'`)
-4. Push para a branch (`git push origin feature/improvement`)
-5. Abra um Pull Request
+### Online Validators
+
+Para validar os diagramas Mermaid antes de commitar:
+
+#### 1. **Mermaid Live Editor** (Recomendado)
+[![Mermaid Validator](https://img.shields.io/badge/Mermaid-Validate-blue)](https://mermaid.live/)
+
+- **URL**: https://mermaid.live/
+- **Como usar**: Copie o código Mermaid e cole no editor
+- **Vantagens**: Validação em tempo real, preview visual
+
+#### 2. **GitHub Mermaid Preview**
+- Os diagramas são automaticamente validados quando o README.md é renderizado no GitHub
+- Se houver erro de sintaxe, o diagrama não será exibido
+
+### Validação Local
+
+#### Script de Validação (opcional)
+
+```bash
+#!/bin/bash
+# mermaid-validator.sh - Valida diagramas Mermaid no README.md
+
+echo "🔍 Validating Mermaid diagrams in README.md..."
+
+# Extrair blocos Mermaid
+grep -A 100 -B 2 "```mermaid" README.md | while read -r line; do
+    if [[ $line == \`\`\`mermaid ]]; then
+        echo "📊 Found Mermaid diagram at line $(grep -n "$line" README.md | cut -d: -f1)"
+    fi
+done
+
+echo "✅ Validation complete. Check GitHub preview for final validation."
+```
+
+#### Como Usar o Script
+
+```bash
+chmod +x mermaid-validator.sh
+./mermaid-validator.sh
+```
+
+### Boas Práticas para Diagramas Mermaid
+
+1. **Teste sempre no [Mermaid Live Editor](https://mermaid.live/)** antes de commitar
+2. **Use nomes únicos** para nós (evite conflitos como C/D)
+3. **Sintaxe básica**: Comece com `graph TD` ou `flowchart TD`
+4. **Verifique no GitHub**: Preview do PR valida automaticamente
+5. **Fallback**: Tenha versão ASCII como backup se Mermaid falhar
+
+### Diagramas Validados ✅
+
+- ✅ CQRS Overview Diagram
+- ✅ CQRS Architecture Diagram
+- ✅ Command Flow Sequence
+- ✅ Query Flow Sequence
+- ✅ Package Structure
+- ✅ Test Coverage Overview
+- ✅ CQRS Benefits Mindmap
 
 ---
 
