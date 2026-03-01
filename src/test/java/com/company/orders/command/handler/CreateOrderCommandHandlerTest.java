@@ -150,4 +150,15 @@ class CreateOrderCommandHandlerTest {
 
         verify(validator).validateOrderTotal(any(BigDecimal.class));
     }
+
+    @Test
+    @DisplayName("Should throw exception when items is null")
+    void testCreateOrder_NullItems() {
+        CreateOrderCommand nullItemsCommand = new CreateOrderCommand(customerId, null);
+
+        assertThrows(OrderException.class, () -> handler.handle(nullItemsCommand, authenticatedCustomerId));
+
+        verify(authorization).validateCreateOrderAuthorization(customerId, authenticatedCustomerId);
+        verify(repository, never()).save(any());
+    }
 }
