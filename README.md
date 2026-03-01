@@ -442,27 +442,31 @@ Authorization: Bearer <token>
 
 ### CQRS Overview
 
-```mermaid
-flowchart TD
-    A[HTTP Request] --> OP[Operation Type]
-
-    OP -->|POST /orders| CMD[Command Side]
-    CMD --> CMD1[OrderCreationController]
-    CMD1 --> CMD2[CreateOrderCommandHandler]
-    CMD2 --> CMD3[OrderCommandRepository]
-    CMD3 --> CMD4[(PostgreSQL Write)]
-
-    OP -->|GET /orders| QRY[Query Side]
-    OP -->|GET /orders/{id}| QRY
-
-    QRY --> QRY1[OrderQueryController]
-    QRY1 --> QRY2[Query Type]
-    QRY2 -->|Get Order| QRY3[GetOrderQueryHandler]
-    QRY2 -->|List Orders| QRY4[ListOrdersQueryHandler]
-    QRY3 --> QRY5[OrderQueryRepository]
-    QRY4 --> QRY5
-    QRY5 --> QRY6[(PostgreSQL Read)]
 ```
+HTTP Request → POST /orders → Command Side
+                    ↓
+          GET /orders → Query Side → GET /orders/{id}
+                    ↓
+                    ↓
+          OrderCreationController → OrderQueryController
+                    ↓                        ↓
+          CreateOrderCommandHandler → GetOrderQueryHandler
+                    ↓                        ↓
+          OrderCommandRepository → OrderQueryRepository
+                    ↓                        ↓
+          PostgreSQL (Write) → PostgreSQL (Read)
+```
+
+**Fluxo CQRS Simplificado:**
+
+1. **Command Side (Write Operations)**:
+   - `POST /orders` → `OrderCreationController` → `CreateOrderCommandHandler` → `OrderCommandRepository`
+
+2. **Query Side (Read Operations)**:
+   - `GET /orders` → `OrderQueryController` → `GetOrderQueryHandler` → `OrderQueryRepository`
+   - `GET /orders/{id}` → `OrderQueryController` → `ListOrdersQueryHandler` → `OrderQueryRepository`
+
+3. **Separação de Responsabilidades**: Commands modificam estado, Queries leem estado
 
 ### CQRS Architecture Diagram
 
