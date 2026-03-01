@@ -442,32 +442,29 @@ Authorization: Bearer <token>
 
 ### CQRS Overview
 
-```mermaid
-graph TD
-    A[HTTP Request] --> B{Operation Type}
-    B -->|POST /orders| CMD[Command Side]
-    B -->|GET /orders| QRY[Query Side]
-    B -->|GET /orders/{id}| QRY
-
-    CMD --> CMD1[OrderCreationController]
-    CMD1 --> CMD2[CreateOrderCommandHandler]
-    CMD2 --> CMD3[OrderCommandRepository]
-    CMD3 --> CMD4[(PostgreSQL Write)]
-
-    QRY --> QRY1[OrderQueryController]
-    QRY1 --> QRY2{Query Type}
-    QRY2 -->|Get Order| QRY3[GetOrderQueryHandler]
-    QRY2 -->|List Orders| QRY4[ListOrdersQueryHandler]
-    QRY3 --> QRY5[OrderQueryRepository]
-    QRY4 --> QRY5
-    QRY5 --> QRY6[(PostgreSQL Read)]
-
-    classDef commandSide fill:#e1f5fe,stroke:#01579b,stroke-width:2px
-    classDef querySide fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px
-
-    class CMD,CMD1,CMD2,CMD3,CMD4 commandSide
-    class QRY,QRY1,QRY2,QRY3,QRY4,QRY5,QRY6 querySide
 ```
+HTTP Request → Operation Type → POST /orders → Command Side → OrderCreationController
+                    ↓                      ↓                   ↓
+             GET /orders → Query Side → OrderQueryController → GetOrderQueryHandler
+                    ↓                                         ↓
+          GET /orders/{id}                               ListOrdersQueryHandler
+                                                                 ↓
+                                                          OrderQueryRepository → PostgreSQL (Read)
+                                               ↓
+                                        OrderCommandRepository → PostgreSQL (Write)
+```
+
+**Fluxo CQRS Simplificado:**
+
+1. **Command Side (Write)**: `POST /orders`
+   - OrderCreationController → CreateOrderCommandHandler → OrderCommandRepository
+   - Foco: Validação, Autorização, Persistência
+
+2. **Query Side (Read)**: `GET /orders`, `GET /orders/{id}`
+   - OrderQueryController → GetOrderQueryHandler/ListOrdersQueryHandler → OrderQueryRepository
+   - Foco: Busca otimizada, Filtros, Paginação
+
+3. **Separação de Responsabilidades**: Commands modificam estado, Queries leem estado
 
 ### CQRS Architecture Diagram
 
