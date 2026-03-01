@@ -525,7 +525,8 @@ flowchart TD
     end
 
     subgraph "Database"
-        DB[(PostgreSQL)]
+        DBP[(PostgreSQL Primary)]
+        DBR[(PostgreSQL Replica)]
     end
 
     CC --> CH
@@ -533,7 +534,7 @@ flowchart TD
     CH --> CM
     CH --> CV
     CH --> CA
-    CR --> DB
+    CR --> DBP
 
     QC --> QH1
     QC --> QH2
@@ -543,7 +544,7 @@ flowchart TD
     QH2 --> QM
     QH1 --> QA
     QH2 --> QA
-    QR --> DB
+    QR --> DBR
 
     CH --> O
     QH1 --> O
@@ -556,11 +557,15 @@ flowchart TD
     CC -.-> GEH
     QC -.-> GEH
 
+    DBP -.-> DBR
+
     style CC fill:#e1f5fe
     style CH fill:#e1f5fe
     style QC fill:#f3e5f5
     style QH1 fill:#f3e5f5
     style QH2 fill:#f3e5f5
+    style DBP fill:#e8f5e8,stroke:#4caf50,stroke-width:2px
+    style DBR fill:#fff3e0,stroke:#ff9800,stroke-width:2px
 ```
 
 ### CQRS Flow Diagrams
