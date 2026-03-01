@@ -445,28 +445,28 @@ Authorization: Bearer <token>
 ```mermaid
 graph TD
     A[HTTP Request] --> B{Operation Type}
-    B -->|POST /orders| C[Command Side]
-    B -->|GET /orders| D[Query Side]
-    B -->|GET /orders/{id}| D
+    B -->|POST /orders| CMD[Command Side]
+    B -->|GET /orders| QRY[Query Side]
+    B -->|GET /orders/{id}| QRY
 
-    C --> C1[OrderCreationController]
-    C1 --> C2[CreateOrderCommandHandler]
-    C2 --> C3[OrderCommandRepository]
-    C3 --> C4[(PostgreSQL Write)]
+    CMD --> CMD1[OrderCreationController]
+    CMD1 --> CMD2[CreateOrderCommandHandler]
+    CMD2 --> CMD3[OrderCommandRepository]
+    CMD3 --> CMD4[(PostgreSQL Write)]
 
-    D --> D1[OrderQueryController]
-    D1 --> D2{Query Type}
-    D2 -->|Get Order| D3[GetOrderQueryHandler]
-    D2 -->|List Orders| D4[ListOrdersQueryHandler]
-    D3 --> D5[OrderQueryRepository]
-    D4 --> D5
-    D5 --> D6[(PostgreSQL Read)]
+    QRY --> QRY1[OrderQueryController]
+    QRY1 --> QRY2{Query Type}
+    QRY2 -->|Get Order| QRY3[GetOrderQueryHandler]
+    QRY2 -->|List Orders| QRY4[ListOrdersQueryHandler]
+    QRY3 --> QRY5[OrderQueryRepository]
+    QRY4 --> QRY5
+    QRY5 --> QRY6[(PostgreSQL Read)]
 
     classDef commandSide fill:#e1f5fe,stroke:#01579b,stroke-width:2px
     classDef querySide fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px
 
-    class C,C1,C2,C3,C4 commandSide
-    class D,D1,D2,D3,D4,D5,D6 querySide
+    class CMD,CMD1,CMD2,CMD3,CMD4 commandSide
+    class QRY,QRY1,QRY2,QRY3,QRY4,QRY5,QRY6 querySide
 ```
 
 ### CQRS Architecture Diagram
