@@ -443,25 +443,25 @@ Authorization: Bearer <token>
 ### CQRS Overview
 
 ```mermaid
-graph TD
-    A[HTTP Request] --> B{Operation Type}
+flowchart TD
+    A[HTTP Request] --> OP[Operation Type]
 
-    B -->|POST /orders| C[Command Side]
-    C --> C1[OrderCreationController]
-    C1 --> C2[CreateOrderCommandHandler]
-    C2 --> C3[OrderCommandRepository]
-    C3 --> C4[(PostgreSQL Write)]
+    OP -->|POST /orders| CMD[Command Side]
+    CMD --> CMD1[OrderCreationController]
+    CMD1 --> CMD2[CreateOrderCommandHandler]
+    CMD2 --> CMD3[OrderCommandRepository]
+    CMD3 --> CMD4[(PostgreSQL Write)]
 
-    B -->|GET /orders| D[Query Side]
-    B -->|GET /orders/{id}| D
+    OP -->|GET /orders| QRY[Query Side]
+    OP -->|GET /orders/{id}| QRY
 
-    D --> D1[OrderQueryController]
-    D1 --> D2{Query Type}
-    D2 -->|Get Order| D3[GetOrderQueryHandler]
-    D2 -->|List Orders| D4[ListOrdersQueryHandler]
-    D3 --> D5[OrderQueryRepository]
-    D4 --> D5
-    D5 --> D6[(PostgreSQL Read)]
+    QRY --> QRY1[OrderQueryController]
+    QRY1 --> QRY2[Query Type]
+    QRY2 -->|Get Order| QRY3[GetOrderQueryHandler]
+    QRY2 -->|List Orders| QRY4[ListOrdersQueryHandler]
+    QRY3 --> QRY5[OrderQueryRepository]
+    QRY4 --> QRY5
+    QRY5 --> QRY6[(PostgreSQL Read)]
 ```
 
 ### CQRS Architecture Diagram
