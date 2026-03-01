@@ -492,6 +492,20 @@ Authorization: Bearer <token>
 
 ```mermaid
 flowchart TD
+    subgraph "Shared Components"
+        SC[SecurityConfig]
+        OC[OpenApiConfig]
+        WC[WebConfig]
+        GEH[GlobalExceptionHandler]
+        L[Logger]
+    end
+
+    subgraph "Domain Layer"
+        O[Order Entity]
+        OI[OrderItem Entity]
+        OS[OrderStatus Enum]
+    end
+
     subgraph "Command Side (Write)"
         CC[OrderCreationController]
         CH[CreateOrderCommandHandler]
@@ -508,20 +522,6 @@ flowchart TD
         QR[OrderQueryRepository]
         QM[OrderQueryMapper]
         QA[OrderAuthorization]
-    end
-
-    subgraph "Domain Layer"
-        O[Order Entity]
-        OI[OrderItem Entity]
-        OS[OrderStatus Enum]
-    end
-
-    subgraph "Shared Components"
-        SC[SecurityConfig]
-        OC[OpenApiConfig]
-        WC[WebConfig]
-        GEH[GlobalExceptionHandler]
-        L[Logger]
     end
 
     subgraph "Database"
