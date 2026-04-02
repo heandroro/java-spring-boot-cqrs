@@ -12,11 +12,11 @@ services:
       - "5432:5432"
     volumes:
       - postgres_primary_data:/var/lib/postgresql/data
-      - ./docker/postgres-primary/postgresql.conf:/etc/postgresql/postgresql.conf
-      - ./docker/postgres-primary/pg_hba.conf:/etc/postgresql/pg_hba.conf
+      - ./docker/postgres-primary/postgresql.conf:/var/lib/postgresql/data/postgresql.conf
+      - ./docker/postgres-primary/pg_hba.conf:/var/lib/postgresql/data/pg_hba.conf
       - ./docker/init-scripts:/docker-entrypoint-initdb.d
       - postgres_archive:/var/lib/postgresql/archive
-    command: ["postgres", "-c", "config_file=/etc/postgresql/postgresql.conf"]
+    command: ["postgres"]
     networks:
       - orders-network
     healthcheck:
@@ -68,11 +68,11 @@ services:
     container_name: orders-service-app
     environment:
       SPRING_DATASOURCE_COMMAND_JDBC_URL: jdbc:postgresql://postgres-primary:5432/orders_db
-      SPRING_DATASOURCE_COMMAND_USERNAME: postgres
-      SPRING_DATASOURCE_COMMAND_PASSWORD: postgres
+      SPRING_DATASOURCE_COMMAND_USERNAME: command_user
+      SPRING_DATASOURCE_COMMAND_PASSWORD: command_password
       SPRING_DATASOURCE_QUERY_JDBC_URL: jdbc:postgresql://postgres-replica:5432/orders_db
-      SPRING_DATASOURCE_QUERY_USERNAME: postgres
-      SPRING_DATASOURCE_QUERY_PASSWORD: postgres
+      SPRING_DATASOURCE_QUERY_USERNAME: query_user
+      SPRING_DATASOURCE_QUERY_PASSWORD: query_password
     ports:
       - "8080:8080"
     depends_on:
@@ -82,6 +82,12 @@ services:
         condition: service_healthy
     networks:
       - orders-network
+    healthcheck:
+      test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost:8080/actuator/health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
 
 volumes:
   postgres_primary_data:

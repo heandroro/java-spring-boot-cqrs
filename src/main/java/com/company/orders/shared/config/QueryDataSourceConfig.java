@@ -25,6 +25,7 @@ import java.util.Map;
         entityManagerFactoryRef = "queryEntityManagerFactory",
         transactionManagerRef = "queryTransactionManager"
 )
+@org.springframework.context.annotation.Profile("!test")
 public class QueryDataSourceConfig {
 
     @Bean(name = "queryDataSource")

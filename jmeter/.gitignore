@@ -1,0 +1,14 @@
+# JMeter Results
+results/*.csv
+results/*.jtl
+results/html-report-*
+
+# Keep directory structure
+!results/.gitkeep
+
+# JMeter logs
+jmeter.log
+
+# Temporary files
+*.tmp
+*.bak

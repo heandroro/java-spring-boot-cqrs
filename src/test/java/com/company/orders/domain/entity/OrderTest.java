@@ -156,20 +156,26 @@ class OrderTest {
     }
 
     @Test
-    @DisplayName("Should set and get all Order fields")
-    void setAndGetAllFields() {
+    @DisplayName("Should cover all getters and setters for 100% coverage")
+    void coverAllGettersAndSetters() {
         Order order = new Order();
         UUID id = UUID.randomUUID();
         UUID customerId = UUID.randomUUID();
+        BigDecimal total = new BigDecimal("150.00");
         
+        // Set all fields
         order.setId(id);
         order.setCustomerId(customerId);
-        order.setStatus(OrderStatus.SHIPPED);
-        order.setTotal(new BigDecimal("200.00"));
+        order.setStatus(OrderStatus.DELIVERED);
+        order.setTotal(total);
         
+        // Call all getters to ensure coverage
         assertEquals(id, order.getId());
         assertEquals(customerId, order.getCustomerId());
-        assertEquals(OrderStatus.SHIPPED, order.getStatus());
-        assertEquals(new BigDecimal("200.00"), order.getTotal());
+        assertEquals(OrderStatus.DELIVERED, order.getStatus());
+        assertEquals(total, order.getTotal());
+        assertNotNull(order.getItems()); // items list is initialized by default
+        assertNull(order.getCreatedAt());
+        assertNull(order.getUpdatedAt());
     }
 }

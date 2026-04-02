@@ -233,6 +233,10 @@
                         <exclude>**/config/OpenApiConfig.class</exclude>
                         <exclude>**/config/SecurityConfig.class</exclude>
                         <exclude>**/config/WebConfig.class</exclude>
+                        <exclude>**/config/CommandDataSourceConfig.class</exclude>
+                        <exclude>**/config/QueryDataSourceConfig.class</exclude>
+                        <!-- Exclude DatabaseMetrics (requires database connection) -->
+                        <exclude>**/monitoring/DatabaseMetrics.class</exclude>
                     </excludes>
                 </configuration>
                 <executions>

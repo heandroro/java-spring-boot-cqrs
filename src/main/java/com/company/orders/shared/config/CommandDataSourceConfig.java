@@ -26,6 +26,7 @@ import java.util.Map;
         entityManagerFactoryRef = "commandEntityManagerFactory",
         transactionManagerRef = "commandTransactionManager"
 )
+@org.springframework.context.annotation.Profile("!test")
 public class CommandDataSourceConfig {
 
     @Primary

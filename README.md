@@ -203,6 +203,23 @@ open target/site/jacoco/index.html
 - Shared Layer: 39 testes
 - Integration: 5 testes
 
+### Stress Tests (JMeter)
+
+```bash
+# Executar stress test (5 minutos)
+./jmeter/scripts/run-test.sh
+
+# Ver documentação completa
+cat jmeter/README-JMETER.md
+```
+
+**Cenários:**
+- Warm-up: 10 usuários (1 min)
+- Load Test: 50 usuários (2 min)
+- Stress Test: 100 usuários (2 min)
+
+Ver [jmeter/README-JMETER.md](jmeter/README-JMETER.md) para detalhes.
+
 ---
 
 ## 🐳 Docker
@@ -267,14 +284,6 @@ open https://mermaid.live/
 ## 📄 Licença
 
 Apache 2.0 - veja [LICENSE](LICENSE) para detalhes.
-
----
-
-## 📞 Suporte
-
-- **Issues**: [GitHub Issues](https://github.com/user/repo/issues)
-- **Discussões**: [GitHub Discussions](https://github.com/user/repo/discussions)
-- **Email**: support@company.com
 
 ---
 
